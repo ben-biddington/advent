@@ -41,8 +41,8 @@ describe('--- Day 1: Sonar Sweep --- (part one)', () => {
 });
 
 describe('--- Day 1: Sonar Sweep --- (part two)', () => {
-  // https://adventofcode.com/2021/day/1#part2
   it('the basic example', () => {
+    // Example taken from https://adventofcode.com/2021/day/1#part2
     const raw = `
       199
       200
@@ -74,15 +74,6 @@ describe('--- Day 1: Sonar Sweep --- (part two)', () => {
       .map(it => it.trim())
       .map(it => parseInt(it));
   
-    const increases = input.filter((value, index) => {
-      if (index === 0)
-        return false;
-      
-      const isIncrease = input[index] > input[index - 1];
-
-      return isIncrease;
-    });
-
-    expect(increases.length).to.eql(1557);
+    expect(getIncreasesInThreeMeasurementSlidingwindow(input).length).to.eql(1608);
   });
 });
