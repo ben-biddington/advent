@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
+import { sum } from '../../core/array-extensions';
 
 const getIncreases = (numbers: number[]) => {
   return numbers.filter((value, index) => {
@@ -21,7 +22,7 @@ const getIncreasesInThreeMeasurementSlidingWindow = (numbers: number[]) => {
 
     if (window.length === 3)
     {
-      sums.push(window.reduce((previous, current) => previous + current));
+      sums.push(sum(window));
     }
   }
 
