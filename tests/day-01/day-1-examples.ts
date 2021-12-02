@@ -12,7 +12,7 @@ const getIncreases = (numbers: number[]) => {
   });  
 }
 
-const getIncreasesInThreeMeasurementSlidingwindow = (numbers: number[]) => {
+const getIncreasesInThreeMeasurementSlidingWindow = (numbers: number[]) => {
   let sums: number[] = [];
 
   for (let i = 0; i < numbers.length; i++) {
@@ -64,7 +64,7 @@ describe('--- Day 1: Sonar Sweep --- (part two)', () => {
 
     expect(input.length).to.eql(10);
 
-    expect(getIncreasesInThreeMeasurementSlidingwindow(input).length).to.eql(5);
+    expect(getIncreasesInThreeMeasurementSlidingWindow(input).length).to.eql(5);
   });
 
   it('three-measurement sliding window', () => {
@@ -74,6 +74,6 @@ describe('--- Day 1: Sonar Sweep --- (part two)', () => {
       .map(it => it.trim())
       .map(it => parseInt(it));
   
-    expect(getIncreasesInThreeMeasurementSlidingwindow(input).length).to.eql(1608);
+    expect(getIncreasesInThreeMeasurementSlidingWindow(input).length).to.eql(1608);
   });
 });
