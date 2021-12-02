@@ -12,6 +12,22 @@ const getIncreases = (numbers: number[]) => {
   });  
 }
 
+const getIncreasesInThreeMeasurementSlidingwindow = (numbers: number[]) => {
+  let sums: number[] = [];
+
+  for (let i = 0; i < numbers.length; i++) {
+    const endIndex = i + 3;
+    const window = numbers.slice(i, endIndex);
+
+    if (window.length === 3)
+    {
+      sums.push(window.reduce((previous, current) => previous + current));
+    }
+  }
+
+  return getIncreases(sums);
+}
+
 describe('--- Day 1: Sonar Sweep --- (part one)', () => {
   it('the number of times a depth measurement increases', () => {
     // https://adventofcode.com/2021/day/1#part1
@@ -25,6 +41,7 @@ describe('--- Day 1: Sonar Sweep --- (part one)', () => {
 });
 
 describe('--- Day 1: Sonar Sweep --- (part two)', () => {
+  // https://adventofcode.com/2021/day/1#part2
   it('the basic example', () => {
     const raw = `
       199
@@ -47,30 +64,7 @@ describe('--- Day 1: Sonar Sweep --- (part two)', () => {
 
     expect(input.length).to.eql(10);
 
-    let sums: number[] = [];
-
-    for (let i = 0; i < input.length; i++) {
-      const endIndex = i + 3;
-      const window = input.slice(i, endIndex);
-
-      if (window.length === 3)
-      {
-        sums.push(window.reduce((previous, current) => previous + current));
-      }
-    }
-
-    expect(sums).to.eql([
-      607,
-      618,
-      618,
-      617,
-      647,
-      716,
-      769,
-      792
-    ]);
-
-    expect(getIncreases(sums).length).to.eql(5);
+    expect(getIncreasesInThreeMeasurementSlidingwindow(input).length).to.eql(5);
   });
 
   it('three-measurement sliding window', () => {
