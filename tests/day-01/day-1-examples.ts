@@ -1,7 +1,16 @@
 import { expect } from 'chai';
-import { previousSaturday } from 'date-fns';
 import * as fs from 'fs';
-import { isExportDeclaration } from 'typescript';
+
+const getIncreases = (numbers: number[]) => {
+  return numbers.filter((value, index) => {
+    if (index === 0)
+      return false;
+    
+    const isIncrease = numbers[index] > numbers[index - 1];
+
+    return isIncrease;
+  });  
+}
 
 describe('--- Day 1: Sonar Sweep --- (part one)', () => {
   it('the number of times a depth measurement increases', () => {
@@ -11,16 +20,7 @@ describe('--- Day 1: Sonar Sweep --- (part one)', () => {
       .map(it => it.trim())
       .map(it => parseInt(it));
   
-    const increases = input.filter((value, index) => {
-      if (index === 0)
-        return false;
-      
-      const isIncrease = input[index] > input[index - 1];
-
-      return isIncrease;
-    });
-
-    expect(increases.length).to.eql(1557);
+    expect(getIncreases(input).length).to.eql(1557);
   });
 });
 
@@ -70,16 +70,7 @@ describe('--- Day 1: Sonar Sweep --- (part two)', () => {
       792
     ]);
 
-    const increases = sums.filter((value, index) => {
-      if (index === 0)
-        return false;
-      
-      const isIncrease = sums[index] > sums[index - 1];
-
-      return isIncrease;
-    });
-
-    expect(increases.length).to.eql(5);
+    expect(getIncreases(sums).length).to.eql(5);
   });
 
   it('three-measurement sliding window', () => {
@@ -89,14 +80,14 @@ describe('--- Day 1: Sonar Sweep --- (part two)', () => {
       .map(it => it.trim())
       .map(it => parseInt(it));
   
-      const increases = input.filter((value, index) => {
-        if (index === 0)
-          return false;
-        
-        const isIncrease = input[index] > input[index - 1];
+    const increases = input.filter((value, index) => {
+      if (index === 0)
+        return false;
+      
+      const isIncrease = input[index] > input[index - 1];
 
-        return isIncrease;
-      });
+      return isIncrease;
+    });
 
     expect(increases.length).to.eql(1557);
   });
