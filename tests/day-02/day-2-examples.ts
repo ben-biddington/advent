@@ -2,31 +2,25 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 import { sum } from '../../core/array-extensions';
 
-const getIncreases = (numbers: number[]) => {
-  return numbers.filter((value, index) => {
-    if (index === 0)
-      return false;
-    
-    const isIncrease = numbers[index] > numbers[index - 1];
+const calculatePosition = (input: string) => {
+  const commands = input.split('\n')
+    .map(it => it.trim())
+    .filter(it => it.length > 0)
+    .map(text => {
+      const parts = text.split(' ');
+      return { 
+        command: parts[0], 
+        value: parseInt(parts[1])
+      }
+    });
 
-    return isIncrease;
-  });  
-}
+  const totalUp   = sum(commands.filter(it => it.command === 'up').map(it => it.value));
+  const totalDown = sum(commands.filter(it => it.command === 'down').map(it => it.value));
 
-const getIncreasesInThreeMeasurementSlidingWindow = (numbers: number[]) => {
-  let sums: number[] = [];
+  const totalForward = sum(commands.filter(it => it.command === 'forward').map(it => it.value));
+  const totalBack    = sum(commands.filter(it => it.command === 'back').map(it => it.value));
 
-  for (let i = 0; i < numbers.length; i++) {
-    const endIndex = i + 3;
-    const window = numbers.slice(i, endIndex);
-
-    if (window.length === 3)
-    {
-      sums.push(window.reduce((previous, current) => previous + current));
-    }
-  }
-
-  return getIncreases(sums);
+  return { horizontal: totalForward - totalBack, depth: totalDown - totalUp };
 }
 
 describe('--- Day 2: Dive! --- (part one)', () => {
@@ -41,25 +35,7 @@ describe('--- Day 2: Dive! --- (part one)', () => {
     `;
 
     const expected = { horizontal: 15, depth: 10 }
-    
-    const commands = raw.split('\n')
-      .map(it => it.trim())
-      .filter(it => it.length > 0)
-      .map(text => {
-        const parts = text.split(' ');
-        return { 
-          command: parts[0], 
-          value: parseInt(parts[1])
-        }
-      });
-
-    const totalUp   = sum(commands.filter(it => it.command === 'up').map(it => it.value));
-    const totalDown = sum(commands.filter(it => it.command === 'down').map(it => it.value));
-
-    const totalForward = sum(commands.filter(it => it.command === 'forward').map(it => it.value));
-    const totalBack    = sum(commands.filter(it => it.command === 'back').map(it => it.value));
-
-    const actual = { horizontal: totalForward - totalBack, depth: totalDown - totalUp };
+    const actual = calculatePosition(raw);
 
     expect(expected).to.eql(actual);
   });
@@ -67,27 +43,8 @@ describe('--- Day 2: Dive! --- (part one)', () => {
   it('Calculate the horizontal position and depth you would have after following the planned course.', () => {
     const raw = fs.readFileSync('./input/two/input').toString();
 
-    const expected = { horizontal: 1906, depth: 1017 }
-    
-    const commands = raw.split('\n')
-      .map(it => it.trim())
-      .filter(it => it.length > 0)
-      .map(text => {
-        const parts = text.split(' ');
-        return { 
-          command: parts[0], 
-          value: parseInt(parts[1])
-        }
-      });
+    const actual = calculatePosition(raw);
 
-    const totalUp = commands.filter(it => it.command === 'up').map(it => it.value).reduce((a,b) => a + b, 0);
-    const totalDown = commands.filter(it => it.command === 'down').map(it => it.value).reduce((a,b) => a + b, 0);
-
-    const totalForward = commands.filter(it => it.command === 'forward').map(it => it.value).reduce((a,b) => a + b, 0);
-    const totalBack = commands.filter(it => it.command === 'back').map(it => it.value).reduce((a,b) => a + b, 0);
-
-    const actual = { horizontal: totalForward - totalBack, depth: totalDown - totalUp };
-
-    expect(expected).to.eql(actual);
+    expect(actual).to.eql({ horizontal: 1906, depth: 1017 });
   });
 });
