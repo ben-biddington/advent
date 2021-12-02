@@ -9,3 +9,5 @@ npm install
 ```
 npm test
 ```
+
+Sign up [here](https://adventofcode.com/2021).
