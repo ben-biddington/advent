@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test.integration": "env TS_NODE_PROJECT=./test/tsconfig.json env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r node_modules/ts-node/register -r node_modules/tsconfig-paths/register \"test/integration/**/*examples.{j,t}s\" \"test/integration/**/can-*.{j,t}s\" --timeout 10000"
+    "test": "env TS_NODE_PROJECT=./tsconfig.json env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r node_modules/ts-node/register -r node_modules/tsconfig-paths/register \"tests/**/*examples.{j,t}s\" \"tests/integration/**/can-*.{j,t}s\" --timeout 10000"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +22,7 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-module-resolver": "^4.1.0",
     "chai": "^4.3.4",
+    "mocha": "^9.1.3",
     "temp": "^0.9.4",
     "tslib": "^2.3.1",
     "typescript": "^4.1.2"
