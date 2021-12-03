@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
 import { BitCriteria, mostCommonBit, leastCommonBit } from './bit-vector';
-import { oxygenGeneratorRating } from './life-support';
+import { carbonDioxideGeneratorRating, oxygenGeneratorRating } from './life-support';
 import { gammaRate, epsilonRate } from './power-consumption';
 
 const fromBinary = (binaryNumber: string) => parseInt(binaryNumber, 2);
@@ -95,11 +95,11 @@ describe('--- Day 3: --- Binary Diagnostic (part two)', () => {
     // 2. Keep only numbers selected by the bit criteria for the type of rating value for which you are searching. 
     // Discard numbers which do not match the bit criteria.
 
-    const ox = oxygenGeneratorRating(reports);
+    expect(oxygenGeneratorRating(reports)).to.eql(23);
+    expect(carbonDioxideGeneratorRating(reports)).to.eql(10);
 
-    expect(ox).to.eql(23);
+    const carbonDioxideScrubberRating = oxygenGeneratorRating(reports) * carbonDioxideGeneratorRating(reports);
 
-    const expected = 230;
-
+    expect(carbonDioxideScrubberRating).to.eql(230);
   });
 });
