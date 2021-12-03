@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
 import { BitCriteria, mostCommonBit, leastCommonBit } from './bit-vector';
+import { oxygenGeneratorRating } from './life-support';
 import { gammaRate, epsilonRate } from './power-consumption';
 
 const fromBinary = (binaryNumber: string) => parseInt(binaryNumber, 2);
@@ -21,23 +22,6 @@ const filterBy = (reports: string[], index: number, criteria: BitCriteria) => {
 
   const theLeastCommonBit = leastCommonBit(reports, index).toString();
   return reports.filter((report: string) => report[index] == theLeastCommonBit);
-}
-
-const oxygenGeneratorRating = (reports: string[]) => {
-  let filteredReports = reports;
-  
-  const width = reports[0].length;
-
-  for (let i = 0; i < width; i++) {
-    filteredReports = filterBy(filteredReports, i, BitCriteria.MostComon);
-    if (filteredReports.length === 1)
-      break;
-  }
-
-  if (filteredReports.length > 1)
-    throw new Error(`There are <${filteredReports.length}> reports, expected 1.`);
-
-  return fromBinary(filteredReports[0]);
 }
 
 describe('--- Day 3: --- Binary Diagnostic (part one)', () => {
