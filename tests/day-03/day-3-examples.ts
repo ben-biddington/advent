@@ -72,7 +72,10 @@ const commonBit = (reports: string[], index: number, criteria: BitCriteria) : '1
   return ones < zeroes ? '1' : '0';
 }
 
-const gammaRate = (input: string) => {
+const gammaRate = (input: string)   => powerConsumption(input, mostCommonBit);
+const epsilonRate = (input: string) => powerConsumption(input, leastCommonBit);
+
+const powerConsumption = (input: string, bitComparison: (reports: string[], index: number) => '1' | '0' |'tie') => {
   const reports = input.split('\n').map(it => it.trim()).filter(it => it.length > 0);
 
   const result = [];
@@ -80,21 +83,7 @@ const gammaRate = (input: string) => {
   const width = reports[0].length;
 
   for (let i = 0; i < width; i++) {
-    result[i] = mostCommonBit(reports, i);
-  }
-
-  return parseInt(result.join(''), 2);
-}
-
-const epsilonRate = (input: string) => {
-  const reports = input.split('\n').map(it => it.trim()).filter(it => it.length > 0);
-
-  const result = [];
-
-  const width = reports[0].length;
-
-  for (let i = 0; i < width; i++) {
-    result[i] = leastCommonBit(reports, i);
+    result[i] = bitComparison(reports, i);
   }
 
   return parseInt(result.join(''), 2);
