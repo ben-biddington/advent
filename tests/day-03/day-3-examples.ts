@@ -82,7 +82,6 @@ describe('--- Day 3: --- Binary Diagnostic (part two)', () => {
     00010
     01010
     `
-
     const reports = raw.split('\n').map(it => it.trim()).filter(it => it.length > 0);
 
     expect(reports.length).to.eql(12);
@@ -101,5 +100,13 @@ describe('--- Day 3: --- Binary Diagnostic (part two)', () => {
     const carbonDioxideScrubberRating = oxygenGeneratorRating(reports) * carbonDioxideGeneratorRating(reports);
 
     expect(carbonDioxideScrubberRating).to.eql(230);
+  });
+
+  it(`Real report`, () => {
+    const raw = fs.readFileSync('./input/three/input').toString(); 
+    
+    const reports = raw.split('\n').map(it => it.trim()).filter(it => it.length > 0);
+
+    expect(oxygenGeneratorRating(reports) * carbonDioxideGeneratorRating(reports)).to.eql(2981085);
   });
 });
