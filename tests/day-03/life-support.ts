@@ -27,7 +27,9 @@ const filterBy = (reports: string[], index: number, criteria: BitCriteria) => {
   return reports.filter((report: string) => report[index] == theLeastCommonBit);
 }
 
-export const oxygenGeneratorRating = (reports: string[]) => {
+export const oxygenGeneratorRating = (input: string) => {
+  const reports = input.split('\n').map(it => it.trim()).filter(it => it.length > 0);
+
   let filteredReports = reports;
   
   const width = reports[0].length;
@@ -44,7 +46,9 @@ export const oxygenGeneratorRating = (reports: string[]) => {
   return fromBinary(filteredReports[0]);
 }
 
-export const carbonDioxideGeneratorRating = (reports: string[]) => {
+export const carbonDioxideGeneratorRating = (input: string) => {
+  const reports = input.split('\n').map(it => it.trim()).filter(it => it.length > 0);
+
   let filteredReports = reports;
   
   const width = reports[0].length;

@@ -82,31 +82,17 @@ describe('--- Day 3: --- Binary Diagnostic (part two)', () => {
     00010
     01010
     `
-    const reports = raw.split('\n').map(it => it.trim()).filter(it => it.length > 0);
+    expect(oxygenGeneratorRating(raw)).to.eql(23);
+    expect(carbonDioxideGeneratorRating(raw)).to.eql(10);
 
-    expect(reports.length).to.eql(12);
+    const lifeSupportRating = oxygenGeneratorRating(raw) * carbonDioxideGeneratorRating(raw);
 
-    // 1. start with the full list of binary numbers from your diagnostic report and consider just the first bit of those numbers.
-    const firstBitOfEachReport: string[] = reports.map(it => it[0]);
-
-    expect(firstBitOfEachReport.length).to.eql(12);
-
-    // 2. Keep only numbers selected by the bit criteria for the type of rating value for which you are searching. 
-    // Discard numbers which do not match the bit criteria.
-
-    expect(oxygenGeneratorRating(reports)).to.eql(23);
-    expect(carbonDioxideGeneratorRating(reports)).to.eql(10);
-
-    const carbonDioxideScrubberRating = oxygenGeneratorRating(reports) * carbonDioxideGeneratorRating(reports);
-
-    expect(carbonDioxideScrubberRating).to.eql(230);
+    expect(lifeSupportRating).to.eql(230);
   });
 
   it(`Real report`, () => {
     const raw = fs.readFileSync('./input/three/input').toString(); 
-    
-    const reports = raw.split('\n').map(it => it.trim()).filter(it => it.length > 0);
 
-    expect(oxygenGeneratorRating(reports) * carbonDioxideGeneratorRating(reports)).to.eql(2981085);
+    expect(oxygenGeneratorRating(raw) * carbonDioxideGeneratorRating(raw)).to.eql(2981085);
   });
 });
