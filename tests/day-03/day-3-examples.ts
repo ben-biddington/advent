@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
+import { mostCommonBit, leastCommonBit } from './bit-vector';
 
 enum BitCriteria {
   LeastCommon,
@@ -41,35 +42,6 @@ const oxygenGeneratorRating = (reports: string[]) => {
     throw new Error(`There are <${filteredReports.length}> reports, expected 1.`);
 
   return fromBinary(filteredReports[0]);
-}
-
-const mostCommonBit = (reports: string[], index: number) : '1' | '0' | 'tie' => 
-  commonBit(reports, index, BitCriteria.MostComon);
-
-const leastCommonBit = (reports: string[], index: number) : '1' | '0' |'tie' => 
-  commonBit(reports, index, BitCriteria.LeastCommon);
-
-const commonBit = (reports: string[], index: number, criteria: BitCriteria) : '1' | '0' | 'tie' => {
-  let zeroes = 0;
-  let ones = 0;
-
-  reports.forEach(report => {
-    const value = report[index];
-
-    if (value === '0') {
-      zeroes++;
-    } else {
-      ones++;
-    }
-  });
-
-  if (ones === zeroes)
-    return 'tie';
-
-  if (criteria === BitCriteria.MostComon)
-    return ones > zeroes ? '1' : '0';
-  
-  return ones < zeroes ? '1' : '0';
 }
 
 const gammaRate = (input: string)   => powerConsumption(input, mostCommonBit);
