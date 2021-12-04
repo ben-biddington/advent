@@ -1,10 +1,11 @@
+import { lines } from 'core/internal/text';
 import { mostCommonBit, leastCommonBit } from '../internal/bit-vector';
 
 export const gammaRate = (input: string)   => powerConsumption(input, mostCommonBit);
 export const epsilonRate = (input: string) => powerConsumption(input, leastCommonBit);
 
 const powerConsumption = (input: string, bitComparison: (reports: string[], index: number) => '1' | '0' |'tie') => {
-  const reports = input.split('\n').map(it => it.trim()).filter(it => it.length > 0);
+  const reports = lines(input);
 
   const result = [];
 

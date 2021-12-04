@@ -1,6 +1,6 @@
+import { fromBinary } from "core/internal/numbers";
+import { lines } from "core/internal/text";
 import { BitCriteria, leastCommonBit, mostCommonBit } from "../internal/bit-vector";
-
-const fromBinary = (binaryNumber: string) => parseInt(binaryNumber, 2);
 
 // Select the matching reports by BitCriteria
 const filterBy = (reports: string[], index: number, criteria: BitCriteria) => {
@@ -28,7 +28,7 @@ const filterBy = (reports: string[], index: number, criteria: BitCriteria) => {
 }
 
 export const oxygenGeneratorRating = (input: string) => {
-  const reports = input.split('\n').map(it => it.trim()).filter(it => it.length > 0);
+  const reports = lines(input);
 
   let filteredReports = reports;
   
@@ -47,7 +47,7 @@ export const oxygenGeneratorRating = (input: string) => {
 }
 
 export const carbonDioxideGeneratorRating = (input: string) => {
-  const reports = input.split('\n').map(it => it.trim()).filter(it => it.length > 0);
+  const reports = lines(input);
 
   let filteredReports = reports;
   

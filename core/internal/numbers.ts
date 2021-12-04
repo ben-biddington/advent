@@ -1,0 +1,1 @@
+export const fromBinary = (binaryNumber: string) => parseInt(binaryNumber, 2);
