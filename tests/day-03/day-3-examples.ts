@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
-import { carbonDioxideGeneratorRating, oxygenGeneratorRating } from '../../core/submarine/life-support';
-import { gammaRate, epsilonRate } from '../../core/submarine/power-consumption';
+import { carbonDioxideGeneratorRating, oxygenGeneratorRating } from 'core/submarine/life-support';
+import { gammaRate, epsilonRate } from 'core/submarine/power-consumption';
 
 describe('--- Day 3: --- Binary Diagnostic (part one)', () => {
   it(`You need to use the binary numbers in the diagnostic report to generate two new binary numbers 

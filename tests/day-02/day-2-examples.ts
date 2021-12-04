@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
-import { sum } from '../../core/array-extensions';
+import { sum } from 'core/array-extensions';
 
 // [i] For part one only.
 const calculatePosition = (input: string) => {
