@@ -14,7 +14,24 @@ type Bingo = {
 const parse = (input: string) : Bingo => {
   const sections = lines(input);
 
-  return { numbers: sections[0].split(',').map(it => parseInt(it)), boards: [] };
+  // @todo: why does `sections[0].split(',').map(parseInt)` make NaNs?
+
+  const boards = [];
+
+  for (let i = 1; i < sections.length; i++) {
+    const rows: number[][] = sections.slice(i, i + 5)
+      .map(line => line.trim())
+      .map(line => line.split(/\s+/).map(it => parseInt(it)));
+ 
+    i += 4;
+
+    boards.push({ rows });
+  }
+
+  return { 
+    numbers: sections[0].split(',').map(it => parseInt(it)),
+    boards: boards
+  };
 }
 
 describe('--- Day 4: Giant Squid --- (part one)', () => {
@@ -44,6 +61,9 @@ describe('--- Day 4: Giant Squid --- (part one)', () => {
     const game = parse(raw);
 
     expect(game.numbers.join(',')).to.eql('7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1');
+    expect(game.boards.length).to.eql(3);
 
+    expect(game.boards[0].rows[0]).to.eql([22, 13, 17, 11, 0]);
+    expect(game.boards[2].rows[4]).to.eql([2,  0, 12,  3,  7]);
   });
 });
