@@ -1,12 +1,11 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
 import { sum } from 'core/array-extensions';
+import { lines } from 'core/internal/text';
 
 // [i] For part one only.
 const calculatePosition = (input: string) => {
-  const commands = input.split('\n')
-    .map(it => it.trim())
-    .filter(it => it.length > 0)
+  const commands = lines(input)
     .map(text => {
       const parts = text.split(' ');
       return { 
@@ -26,8 +25,7 @@ const calculatePosition = (input: string) => {
 
 // [i] Is more correct: includes aim.
 const calculatePositionVersionTwo = (input: string) => {
-  const commands = input.split('\n')
-    .map(it => it.trim())
+  const commands = lines(input)
     .filter(it => it.length > 0)
     .map(text => {
       const parts = text.split(' ');
