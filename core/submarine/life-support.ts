@@ -42,18 +42,24 @@ export const carbonDioxideGeneratorRating = (input: string) => {
 
 // Select the matching reports by BitCriteria
 const filterBy = (reports: string[], index: number, criteria: BitCriteria) => {
-  if (criteria == BitCriteria.MostComon) {
-    const theMostCommonBit = mostCommonBit(reports, index).toString();
+  return criteria == BitCriteria.MostComon 
+    ? filterByMostCommon(reports, index) 
+    : filterByLeastCommon(reports, index);
+}
 
-    if (theMostCommonBit === 'tie') {
-      // In the fifth position, there are an equal number of 0 bits and 1 bits (one each). 
-      // So, to find the oxygen generator rating, keep the number with a 1 in that position: 10111.
-      return reports.filter((report: string) => report[index] == '1');  
-    }
+const filterByMostCommon = (reports: string[], index: number) => {
+  const theMostCommonBit = mostCommonBit(reports, index).toString();
 
-    return reports.filter((report: string) => report[index] == theMostCommonBit);
+  if (theMostCommonBit === 'tie') {
+    // In the fifth position, there are an equal number of 0 bits and 1 bits (one each). 
+    // So, to find the oxygen generator rating, keep the number with a 1 in that position: 10111.
+    return reports.filter((report: string) => report[index] == '1');  
   }
 
+  return reports.filter((report: string) => report[index] == theMostCommonBit);
+}
+
+const filterByLeastCommon = (reports: string[], index: number) => {
   const theLeastCommonBit = leastCommonBit(reports, index).toString();
 
   if (theLeastCommonBit === 'tie') {
