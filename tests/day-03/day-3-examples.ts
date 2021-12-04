@@ -1,28 +1,7 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
-import { BitCriteria, mostCommonBit, leastCommonBit } from './bit-vector';
-import { carbonDioxideGeneratorRating, oxygenGeneratorRating } from './life-support';
-import { gammaRate, epsilonRate } from './power-consumption';
-
-const fromBinary = (binaryNumber: string) => parseInt(binaryNumber, 2);
-
-// Select the matching reports by BitCriteria
-const filterBy = (reports: string[], index: number, criteria: BitCriteria) => {
-  if (criteria == BitCriteria.MostComon) {
-    const theMostCommonBit = mostCommonBit(reports, index).toString();
-
-    if (theMostCommonBit === 'tie') {
-      // In the fifth position, there are an equal number of 0 bits and 1 bits (one each). 
-      // So, to find the oxygen generator rating, keep the number with a 1 in that position: 10111.
-      return reports.filter((report: string) => report[index] == '1');  
-    }
-
-    return reports.filter((report: string) => report[index] == theMostCommonBit);
-  }
-
-  const theLeastCommonBit = leastCommonBit(reports, index).toString();
-  return reports.filter((report: string) => report[index] == theLeastCommonBit);
-}
+import { carbonDioxideGeneratorRating, oxygenGeneratorRating } from '../../core/submarine/life-support';
+import { gammaRate, epsilonRate } from '../../core/submarine/power-consumption';
 
 describe('--- Day 3: --- Binary Diagnostic (part one)', () => {
   it(`You need to use the binary numbers in the diagnostic report to generate two new binary numbers 

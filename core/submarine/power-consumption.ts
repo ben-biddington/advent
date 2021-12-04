@@ -1,4 +1,4 @@
-import { mostCommonBit, leastCommonBit } from './bit-vector';
+import { mostCommonBit, leastCommonBit } from '../internal/bit-vector';
 
 export const gammaRate = (input: string)   => powerConsumption(input, mostCommonBit);
 export const epsilonRate = (input: string) => powerConsumption(input, leastCommonBit);

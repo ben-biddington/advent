@@ -1,4 +1,4 @@
-import { BitCriteria, leastCommonBit, mostCommonBit } from "./bit-vector";
+import { BitCriteria, leastCommonBit, mostCommonBit } from "../internal/bit-vector";
 
 const fromBinary = (binaryNumber: string) => parseInt(binaryNumber, 2);
 
