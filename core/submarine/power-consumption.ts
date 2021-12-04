@@ -1,6 +1,7 @@
 import { lines } from 'core/internal/text';
 import { mostCommonBit, leastCommonBit } from '../internal/bit-vector';
 
+// https://adventofcode.com/2021/day/3
 export const gammaRate = (input: string)   => powerConsumption(input, mostCommonBit);
 export const epsilonRate = (input: string) => powerConsumption(input, leastCommonBit);
 
