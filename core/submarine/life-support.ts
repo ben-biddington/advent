@@ -2,7 +2,10 @@ import { fromBinary } from "core/internal/numbers";
 import { lines } from "core/internal/text";
 import { BitCriteria, leastCommonBit, mostCommonBit } from "../internal/bit-vector";
 
-export const oxygenGeneratorRating = (input: string) => {
+export const oxygenGeneratorRating        = (input: string) => rating(input, BitCriteria.MostComon);
+export const carbonDioxideGeneratorRating = (input: string) => rating(input, BitCriteria.LeastCommon);
+
+export const rating = (input: string, criteria: BitCriteria) => {
   const reports = lines(input);
 
   let filteredReports = reports;
@@ -10,26 +13,7 @@ export const oxygenGeneratorRating = (input: string) => {
   const width = reports[0].length;
 
   for (let i = 0; i < width; i++) {
-    filteredReports = filterBy(filteredReports, i, BitCriteria.MostComon);
-    if (filteredReports.length === 1)
-      break;
-  }
-
-  if (filteredReports.length > 1)
-    throw new Error(`There are <${filteredReports.length}> reports, expected 1.`);
-
-  return fromBinary(filteredReports[0]);
-}
-
-export const carbonDioxideGeneratorRating = (input: string) => {
-  const reports = lines(input);
-
-  let filteredReports = reports;
-  
-  const width = reports[0].length;
-
-  for (let i = 0; i < width; i++) {
-    filteredReports = filterBy(filteredReports, i, BitCriteria.LeastCommon);
+    filteredReports = filterBy(filteredReports, i, criteria);
     if (filteredReports.length === 1)
       break;
   }
