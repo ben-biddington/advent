@@ -325,4 +325,17 @@ describe('--- Day 4: Giant Squid --- (part two)', () => {
     expect(lastBoardToWin.sumOfUnmarkedNumbers()).to.eql(148);
     expect(lastBoardToWin.sumOfUnmarkedNumbers() * lastBoardToWin.lastWinningNumber).to.eql(1924);
   });
+
+  it(`Real game, which board wins last`, () => {
+    const raw = fs.readFileSync('./input/four/input').toString(); 
+
+    const game = parse(raw);
+
+    const winningBoards = game.playToEnd();
+
+    const lastBoardToWin = winningBoards[winningBoards.length - 1];
+
+    expect(lastBoardToWin.sumOfUnmarkedNumbers()).to.eql(314);
+    expect(lastBoardToWin.sumOfUnmarkedNumbers() * lastBoardToWin.lastWinningNumber).to.eql(6594);
+  });
 });
