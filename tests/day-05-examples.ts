@@ -30,6 +30,64 @@ const parse = (input: string) : LineSegment[] => {
   });
 }
 
+const selectHorizontalOrVerticalLines = (segments: LineSegment[]) => {
+  return segments.filter(segment => segment.start.x == segment.end.x || segment.start.y == segment.end.y)
+}
+
+const findExtent = (segments: LineSegment[]) : Coordinates => {
+  const largestX = segments
+    .map(segment            => Math.max(segment.start.x, segment.end.x))
+    .reduce((current, next) => Math.max(current, next), 0);
+
+  const largestY = segments
+    .map(segment            => Math.max(segment.start.y, segment.end.y))
+    .reduce((current, next) => Math.max(current, next), 0);
+  
+  return {
+    x: largestX,
+    y: largestY
+  }
+}
+
+const covers = (segment: LineSegment, coords: Coordinates) => {
+  const minX = Math.min(segment.start.x, segment.end.x);
+  const maxX = Math.max(segment.start.x, segment.end.x);
+
+  const minY = Math.min(segment.start.y, segment.end.y);
+  const maxY = Math.max(segment.start.y, segment.end.y);
+
+  const isWithinXRange = minX <= coords.x && coords.x <= maxX;
+  const isWithinYRange = minY <= coords.y && coords.y <= maxY;
+
+  return isWithinXRange && isWithinYRange;
+}
+
+const coverageDiagram = (segments: LineSegment[]) => {
+  const horizontalOrVerticalLines = selectHorizontalOrVerticalLines(segments);
+  const extent = findExtent(segments);
+
+  const resultLines = [];
+
+  for (let y = 0; y <= extent.y; y++) {
+    const row = [];
+
+    for (let x = 0; x <= extent.x; x++) {
+      const coveringSegments = horizontalOrVerticalLines
+        .filter(segment => covers(segment, { x, y }));
+
+      if (coveringSegments.length > 0) {
+        row.push(coveringSegments.length.toString());
+      } else {
+        row.push('.');
+      }
+    }
+
+    resultLines.push(row.join(''));
+  }
+
+  return resultLines.join('\n');
+}
+
 describe('--- Day 5: Hydrothermal Venture --- (part one)', () => {
   it(`determine the number of points where at least two lines overlap`, () => {
     const input = `
@@ -58,8 +116,38 @@ describe('--- Day 5: Hydrothermal Venture --- (part one)', () => {
         start: { x: 5, y: 5 }, end: { x: 8, y: 2 }
       }
     )
+
+    const horizontalOrVerticalLines = selectHorizontalOrVerticalLines(segments);
+
+    expect(horizontalOrVerticalLines.length).to.eql(6);
+
+    //console.log(JSON.stringify(horizontalOrVerticalLines, null, 2));
+
+    expect(findExtent(segments)).to.eql({x: 9, y: 9});
+
+    expect(covers(segments[0], { x: 0, y: 9 })).to.be.true;
+    expect(covers(segments[0], { x: 5, y: 9 })).to.be.true;
+    expect(covers(segments[0], { x: 6, y: 9 })).to.be.false;
+
+    const expected = `
+.......1..
+..1....1..
+..1....1..
+.......1..
+.112111211
+..........
+..........
+..........
+..........
+222111....
+    `
+
+    const diagram = coverageDiagram(segments);
+
+    expect(diagram).to.eql(expected.trim());
   });
 
   it(`Real game`, () => {
+    
   });
 });
