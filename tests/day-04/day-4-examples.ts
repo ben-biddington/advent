@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { sum } from 'core/array-extensions';
 import { lines } from 'core/internal/text';
 import * as fs from 'fs';
-import { setUncaughtExceptionCaptureCallback } from 'process';
 
 type Match = {
   row: number;
@@ -65,9 +64,7 @@ class Board {
       }
     }
 
-    const result = winningRowIndices.map(it => this.rows[it]);
-
-    return result;
+    return winningRowIndices.map(it => this.rows[it]);
   }
 
   private winningColumns() {
@@ -109,25 +106,15 @@ class BingoGame {
     }
   }
 
-  playUntilWin(): Board[] {
-    for (this.index = 0; this.index < this.numbers.length; this.index++) {
-      const number = this.numbers[this.index];
-
-      this.boards.forEach(board => {
-        board.play(number);
-      });
-
-      const winners = this.boards.filter(it => it.hasWon());
-
-      if (winners.length > 0) {
-        return winners;
-      }
-    }
-
-    return [];
+  playUntilFirstWin(): Board[] {
+    return this.playUntil(winners => winners.length > 0);
   }
 
   playToEnd(): Board[] {
+    return this.playUntil(winners => winners.length === this.boards.length);
+  }
+
+  private playUntil(block: (winners: Board[]) => boolean): Board[] {
     const winners: number[] = [];
 
     for (this.index = 0; this.index < this.numbers.length; this.index++) {
@@ -141,7 +128,7 @@ class BingoGame {
         }
       });
 
-      if (winners.length === this.boards.length)
+      if (block(winners.map(i => this.boards[i])))
         break;
     }
 
@@ -271,7 +258,7 @@ describe('--- Day 4: Giant Squid --- (part one)', () => {
 
     game.reset();
     
-    const winningBoards = game.playUntilWin();
+    const winningBoards = game.playUntilFirstWin();
 
     expect(winningBoards.length).to.eql(1);
     expect(game.lastCalledNumber).to.eql(24);
@@ -286,7 +273,7 @@ describe('--- Day 4: Giant Squid --- (part one)', () => {
 
     const game = parse(raw);
 
-    const winningBoards = game.playUntilWin();
+    const winningBoards = game.playUntilFirstWin();
 
     expect(winningBoards[0].sumOfUnmarkedNumbers() * game.lastCalledNumber).to.eql(2745);
   });
