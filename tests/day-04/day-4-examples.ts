@@ -1,6 +1,8 @@
 import { expect } from 'chai';
+import { sum } from 'core/array-extensions';
 import { lines } from 'core/internal/text';
 import * as fs from 'fs';
+import { setUncaughtExceptionCaptureCallback } from 'process';
 
 type Match = {
   row: number;
@@ -11,9 +13,12 @@ type Match = {
 class Board {
   public rows: number[][] = [];
   public matches: Match[] = []
+  private readonly size: number = 5;
+  private readonly label: string = '';
 
-  constructor(rows: number[][]) {
+  constructor(rows: number[][], label: string) {
     this.rows = rows;
+    this.label = label;
   }
 
   play(number: number) {
@@ -25,6 +30,52 @@ class Board {
           column: row.indexOf(number)
         })
       }
+    })
+  }
+
+  clear() {
+    this.matches = [];
+  }
+
+  hasWon(): boolean {
+    return this.winningRows().length > 0 || this.winningColumns().length > 0;
+  }
+
+  sumOfUnmarkedNumbers() : number {
+    const markedNumbers = this.matches.map(it => it.number);
+
+    const allNumbers = this.rows.flat();
+
+    return sum(allNumbers.filter(it => false == markedNumbers.includes(it)));
+  }
+
+  private winningRows() {
+    const winningRowIndices: number[] = [];
+
+    for (let index = 0; index < this.size; index++) {
+      if (this.matches.filter(it => it.row === index).length == this.size) {
+        winningRowIndices.push(index);
+      }
+    }
+
+    const result = winningRowIndices.map(it => this.rows[it]);
+
+    return result;
+  }
+
+  private winningColumns() {
+    const winningColumnIndices: number[] = [];
+
+    for (let index = 0; index < this.size; index++) {
+      if (this.matches.filter(it => it.column === index).length == this.size) {
+        winningColumnIndices.push(index);
+      }
+    }
+
+    return winningColumnIndices.map(columnIndex => {
+      return this.rows.map(row => {
+        return row[columnIndex];
+      });
     });
   }
 }
@@ -33,6 +84,10 @@ class BingoGame {
   private index: number = 0;
   public numbers: number[] = [];
   public boards: Board[] = [];
+
+  get lastCalledNumber() {
+    return this.numbers[this.index];
+  }
 
   constructor(numbers: number[], boards: Board[]) {
     this.numbers = numbers;
@@ -45,6 +100,29 @@ class BingoGame {
 
       this.boards.forEach(board => board.play(number))
     }
+  }
+
+  playUntilWin() : Board[] {
+    for (this.index = 0; this.index < this.numbers.length; this.index++) {
+      const number = this.numbers[this.index];
+
+      this.boards.forEach(board => {
+        board.play(number);
+      });
+
+      const winners = this.boards.filter(it => it.hasWon())
+
+      if (winners.length > 0) {
+        return winners;
+      }
+    }
+
+    return [];
+  }
+
+  reset() {
+    this.index = 0;
+    this.boards.forEach(board => board.clear());
   }
 }
 
@@ -62,7 +140,7 @@ const parse = (input: string) : BingoGame => {
  
     i += 4;
 
-    boards.push(new Board(rows));
+    boards.push(new Board(rows, `board-${boards.length + 1}`));
   }
 
   return new BingoGame(
@@ -131,6 +209,8 @@ describe('--- Day 4: Giant Squid --- (part one)', () => {
 
     game.play(5);
 
+    expect(game.boards[2].rows.length).to.eql(5);
+
     expect(game.boards[0].matches.length).to.eql(5);
 
     expect(game.boards[0].matches).to.eql([
@@ -160,5 +240,16 @@ describe('--- Day 4: Giant Squid --- (part one)', () => {
         column: 3
       },
     ]);
+
+    game.reset();
+    
+    const winningBoards = game.playUntilWin();
+
+    expect(winningBoards.length).to.eql(1);
+    expect(game.lastCalledNumber).to.eql(24);
+
+    expect(winningBoards[0].sumOfUnmarkedNumbers()).to.eql(188);
+
+    expect(winningBoards[0].sumOfUnmarkedNumbers() * game.lastCalledNumber).to.eql(4512);
   });
 });
