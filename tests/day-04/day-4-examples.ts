@@ -15,6 +15,7 @@ class Board {
   public matches: Match[] = []
   private readonly size: number = 5;
   private readonly label: string = '';
+  public lastWinningNumber: number = 0;
 
   constructor(rows: number[][], label: string) {
     this.rows = rows;
@@ -22,6 +23,8 @@ class Board {
   }
 
   play(number: number) {
+    const hasWonAlready = this.hasWon();
+
     this.rows.forEach((row, index) => {
       if (row.includes(number)) {
         this.matches.push({
@@ -30,7 +33,11 @@ class Board {
           column: row.indexOf(number)
         })
       }
-    })
+    });
+
+    if (false == hasWonAlready && this.hasWon()) {
+      this.lastWinningNumber = number;
+    }
   }
 
   clear() {
@@ -102,7 +109,7 @@ class BingoGame {
     }
   }
 
-  playUntilWin() : Board[] {
+  playUntilWin(): Board[] {
     for (this.index = 0; this.index < this.numbers.length; this.index++) {
       const number = this.numbers[this.index];
 
@@ -110,7 +117,7 @@ class BingoGame {
         board.play(number);
       });
 
-      const winners = this.boards.filter(it => it.hasWon())
+      const winners = this.boards.filter(it => it.hasWon());
 
       if (winners.length > 0) {
         return winners;
@@ -118,6 +125,27 @@ class BingoGame {
     }
 
     return [];
+  }
+
+  playToEnd(): Board[] {
+    const winners: number[] = [];
+
+    for (this.index = 0; this.index < this.numbers.length; this.index++) {
+      const number = this.numbers[this.index];
+
+      this.boards.forEach((board, index) => {
+        board.play(number);
+
+        if (board.hasWon() && false == winners.includes(index)) {
+          winners.push(index)
+        }
+      });
+
+      if (winners.length === this.boards.length)
+        break;
+    }
+
+    return winners.map(i => this.boards[i]);
   }
 
   reset() {
@@ -261,5 +289,40 @@ describe('--- Day 4: Giant Squid --- (part one)', () => {
     const winningBoards = game.playUntilWin();
 
     expect(winningBoards[0].sumOfUnmarkedNumbers() * game.lastCalledNumber).to.eql(2745);
+  });
+});
+
+describe('--- Day 4: Giant Squid --- (part two)', () => {
+  it(`Which board wins last`, () => {
+    const raw = `
+      7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
+
+      22 13 17 11  0
+      8  2 23  4 24
+      21  9 14 16  7
+      6 10  3 18  5
+      1 12 20 15 19
+      
+      3 15  0  2 22
+      9 18 13 17  5
+      19  8  7 25 23
+      20 11 10 24  4
+      14 21 16 12  6
+      
+      14 21 17 24  4
+      10 16 15  9 19
+      18  8 23 26 20
+      22 11 13  6  5
+      2  0 12  3  7
+    `
+
+    const game = parse(raw);
+
+    const winningBoards = game.playToEnd();
+
+    const lastBoardToWin = winningBoards[winningBoards.length - 1];
+    
+    expect(lastBoardToWin.sumOfUnmarkedNumbers()).to.eql(148);
+    expect(lastBoardToWin.sumOfUnmarkedNumbers() * lastBoardToWin.lastWinningNumber).to.eql(1924);
   });
 });
