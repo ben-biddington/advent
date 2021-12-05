@@ -88,6 +88,26 @@ const coverageDiagram = (segments: LineSegment[]) => {
   return resultLines.join('\n');
 }
 
+const countOverlaps = (segments: LineSegment[]): number => {
+  const horizontalOrVerticalLines = selectHorizontalOrVerticalLines(segments);
+  const extent = findExtent(segments);
+
+  let result = 0;
+
+  for (let y = 0; y <= extent.y; y++) {
+    for (let x = 0; x <= extent.x; x++) {
+      const coveringSegments = horizontalOrVerticalLines
+        .filter(segment => covers(segment, { x, y }));
+
+      if (coveringSegments.length >= 2) {
+        result++
+      }
+    }
+  }
+
+  return result;
+}
+
 describe('--- Day 5: Hydrothermal Venture --- (part one)', () => {
   it(`determine the number of points where at least two lines overlap`, () => {
     const input = `
@@ -145,9 +165,15 @@ describe('--- Day 5: Hydrothermal Venture --- (part one)', () => {
     const diagram = coverageDiagram(segments);
 
     expect(diagram).to.eql(expected.trim());
+
+    expect(countOverlaps(segments)).to.eql(5);
   });
 
   it(`Real game`, () => {
-    
+    const input = fs.readFileSync('./input/five').toString();
+
+    const segments = parse(input);
+
+    expect(countOverlaps(segments)).to.eql(7269);
   });
 });
