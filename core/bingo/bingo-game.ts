@@ -26,7 +26,7 @@ export default class BingoGame {
     return this.playUntil(winners => winners.length > 0);
   }
 
-  playToEnd(): Board[] {
+  playUntilAllBoardsWin(): Board[] {
     return this.playUntil(winners => winners.length === this.boards.length);
   }
 

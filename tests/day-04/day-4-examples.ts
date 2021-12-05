@@ -168,7 +168,7 @@ describe('--- Day 4: Giant Squid --- (part two)', () => {
 
     const game = parse(raw);
 
-    const winningBoards = game.playToEnd();
+    const winningBoards = game.playUntilAllBoardsWin();
 
     const lastBoardToWin = winningBoards[winningBoards.length - 1];
     
@@ -181,7 +181,7 @@ describe('--- Day 4: Giant Squid --- (part two)', () => {
 
     const game = parse(raw);
 
-    const winningBoards = game.playToEnd();
+    const winningBoards = game.playUntilAllBoardsWin();
 
     const lastBoardToWin = winningBoards[winningBoards.length - 1];
 
