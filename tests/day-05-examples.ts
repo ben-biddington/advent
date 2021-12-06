@@ -200,8 +200,8 @@ describe('--- Day 5: Hydrothermal Venture --- (part one)', () => {
 
     expect(countOverlaps(horizontalOrVerticalSegments)).to.eql(5);
   });
-
-  it(`Real game`, () => {
+ 
+  it.skip(`Real game`, () => { // slow
     const input = fs.readFileSync('./input/five').toString();
 
     const segments = parse(input);
@@ -246,7 +246,7 @@ describe('--- Day 5: Hydrothermal Venture --- (part two)', () => {
     expect(countOverlaps(segments)).to.eql(12);
   });
 
-  it(`Real game`, () => {
+  it.skip(`Real game`, () => { // slow
     const input = fs.readFileSync('./input/five').toString();
 
     const segments = parse(input);
