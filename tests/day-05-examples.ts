@@ -1,8 +1,6 @@
 import * as fs from 'fs';
 import { expect } from 'chai';
 import { lines } from 'core/internal/text';
-import BingoGame from 'core/bingo/bingo-game';
-import Board from 'core/bingo/board';
 
 type Coordinates = {
   x: number;
@@ -23,9 +21,20 @@ const parse = (input: string) : LineSegment[] => {
   return lines(input).map((startAndEnd: string) => {
     const [start, end] = startAndEnd.split('->');
 
-    return {
-      start: parseCoordinates(start),
-      end: parseCoordinates(end),
+    const first = parseCoordinates(start); 
+    const last  = parseCoordinates(end); 
+
+    // [i] always arrange with smallest x value first
+    if (first.x < last.x) {
+      return {
+        start: first,
+        end: last,
+      }
+    } else {
+      return {
+        start: last,
+        end: first,
+      }
     }
   });
 }
@@ -50,20 +59,54 @@ const findExtent = (segments: LineSegment[]) : Coordinates => {
 }
 
 const covers = (segment: LineSegment, coords: Coordinates) => {
-  const minX = Math.min(segment.start.x, segment.end.x);
-  const maxX = Math.max(segment.start.x, segment.end.x);
+  return includes(segment, coords);
+}
 
-  const minY = Math.min(segment.start.y, segment.end.y);
-  const maxY = Math.max(segment.start.y, segment.end.y);
+const isWithinRange = (segment: LineSegment, coords: Coordinates) => {
+  const [minX, maxX] = [ Math.min(segment.start.x, segment.end.x), Math.max(segment.start.x, segment.end.x)];
+  const [minY, maxY] = [ Math.min(segment.start.y, segment.end.y), Math.max(segment.start.y, segment.end.y)];
 
-  const isWithinXRange = minX <= coords.x && coords.x <= maxX;
-  const isWithinYRange = minY <= coords.y && coords.y <= maxY;
+  const result = (minX <= coords.x && coords.x <= maxX) && (minY <= coords.y && coords.y <= maxY);
 
-  return isWithinXRange && isWithinYRange;
+  return result;
+}
+
+// Tell me if segment include point
+const includes = (segment: LineSegment, coords: Coordinates): boolean => {
+  if (false == isWithinRange(segment, coords))
+    return false;
+
+  const rise = segment.end.y - segment.start.y;
+  const run  = segment.end.x - segment.start.x;
+
+  if (rise === 0) {
+    // Horizontal line
+    return coords.y === segment.start.y;
+  }
+
+  if (run === 0) {
+    // Vertical line
+    return coords.x === segment.start.x;
+  }
+
+  const slope = rise/run;
+
+  const startPoint  = segment.start.x < segment.end.x ? segment.start : segment.end;
+
+  let x = startPoint.x;
+  let y = startPoint.y;
+  
+  while (x > 0) {
+    y -= slope; // [i] *reduce* y as we're finding the intercept
+    x -= 1;
+  }
+
+  const fn = (x: number) => slope*x + y;
+
+  return fn(coords.x) === coords.y;
 }
 
 const coverageDiagram = (segments: LineSegment[]) => {
-  const horizontalOrVerticalLines = selectHorizontalOrVerticalLines(segments);
   const extent = findExtent(segments);
 
   const resultLines = [];
@@ -72,7 +115,7 @@ const coverageDiagram = (segments: LineSegment[]) => {
     const row = [];
 
     for (let x = 0; x <= extent.x; x++) {
-      const coveringSegments = horizontalOrVerticalLines
+      const coveringSegments = segments
         .filter(segment => covers(segment, { x, y }));
 
       if (coveringSegments.length > 0) {
@@ -89,14 +132,13 @@ const coverageDiagram = (segments: LineSegment[]) => {
 }
 
 const countOverlaps = (segments: LineSegment[]): number => {
-  const horizontalOrVerticalLines = selectHorizontalOrVerticalLines(segments);
   const extent = findExtent(segments);
 
   let result = 0;
 
   for (let y = 0; y <= extent.y; y++) {
     for (let x = 0; x <= extent.x; x++) {
-      const coveringSegments = horizontalOrVerticalLines
+      const coveringSegments = segments
         .filter(segment => covers(segment, { x, y }));
 
       if (coveringSegments.length >= 2) {
@@ -137,18 +179,6 @@ describe('--- Day 5: Hydrothermal Venture --- (part one)', () => {
       }
     )
 
-    const horizontalOrVerticalLines = selectHorizontalOrVerticalLines(segments);
-
-    expect(horizontalOrVerticalLines.length).to.eql(6);
-
-    //console.log(JSON.stringify(horizontalOrVerticalLines, null, 2));
-
-    expect(findExtent(segments)).to.eql({x: 9, y: 9});
-
-    expect(covers(segments[0], { x: 0, y: 9 })).to.be.true;
-    expect(covers(segments[0], { x: 5, y: 9 })).to.be.true;
-    expect(covers(segments[0], { x: 6, y: 9 })).to.be.false;
-
     const expected = `
 .......1..
 ..1....1..
@@ -162,11 +192,13 @@ describe('--- Day 5: Hydrothermal Venture --- (part one)', () => {
 222111....
     `
 
-    const diagram = coverageDiagram(segments);
+    const horizontalOrVerticalSegments = selectHorizontalOrVerticalLines(segments);
+
+    const diagram = coverageDiagram(selectHorizontalOrVerticalLines(horizontalOrVerticalSegments));
 
     expect(diagram).to.eql(expected.trim());
 
-    expect(countOverlaps(segments)).to.eql(5);
+    expect(countOverlaps(horizontalOrVerticalSegments)).to.eql(5);
   });
 
   it(`Real game`, () => {
@@ -174,7 +206,7 @@ describe('--- Day 5: Hydrothermal Venture --- (part one)', () => {
 
     const segments = parse(input);
 
-    expect(countOverlaps(segments)).to.eql(7269);
+    expect(countOverlaps(selectHorizontalOrVerticalLines(segments))).to.eql(7269);
   });
 });
 
@@ -206,20 +238,19 @@ describe('--- Day 5: Hydrothermal Venture --- (part two)', () => {
 .1.....1..
 1.......1.
 222111....
-    `
-
+`
     const diagram = coverageDiagram(segments);
 
     expect(diagram).to.eql(expected.trim());
 
-    expect(countOverlaps(segments)).to.eql(5);
+    expect(countOverlaps(segments)).to.eql(12);
   });
 
-  it.skip(`Real game`, () => {
+  it(`Real game`, () => {
     const input = fs.readFileSync('./input/five').toString();
 
     const segments = parse(input);
 
-    expect(countOverlaps(segments)).to.eql(7269);
+    expect(countOverlaps(segments)).to.eql(21140);
   });
 });
