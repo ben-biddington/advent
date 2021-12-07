@@ -3,17 +3,13 @@ import { range, sum } from "core/array-extensions";
 import * as fs from 'fs';
 
 const minimizeDistance = (input: string) => {
-  return minimize(input, (position, distance) =>
-    Math.max(position, distance) - Math.min(position, distance)
-  );
+  return minimize(input, (position, distance) => Math.abs(position - distance));
 }
 
 const minimizeFuel = (input: string) => {
   const fuelUsed = (moveCount: number) => sum(range(1, moveCount));
   
-  return minimize(input, (position, distance) => 
-    fuelUsed(Math.max(position, distance) - Math.min(position, distance))
-  );
+  return minimize(input, (position, distance) => fuelUsed(Math.abs(position - distance)));
 }
 
 // https://www.geeksforgeeks.org/optimum-location-point-minimize-total-distance/
