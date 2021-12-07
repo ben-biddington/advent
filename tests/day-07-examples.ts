@@ -5,22 +5,27 @@ import * as fs from 'fs';
 const minimizeDistance = (input: string) => {
   const distances = parse(input);
 
-  let max = distances[distances.length-1] * 200;
-  let min = max;
-
   // https://www.geeksforgeeks.org/optimum-location-point-minimize-total-distance/
 
-  for (let distance = max; distance >= 0; distance--) {
-    const current = sum(distances.map(n => {
-      return Math.max(distance, n) - Math.min(distance, n);
-    }));
+  let last = 0;
 
-    if (current < min) {
-      min = current;
+  // [i] Start from zero and move right until numbers start to increase
+  for (let position = 0; position >= 0; position++) {
+    const current = sum(distances.map(n => 
+      Math.max(position, n) - Math.min(position, n)
+    ));
+
+    if (position == 0) {
+      last = current;
+    } else if (position > 0) {
+      if (current > last)
+        break;
+      
+      last = current;
     }
   }
 
-  return min;
+  return last;
 }
 
 const fuelUsed = (moveCount: number) => sum(range(1, moveCount));
