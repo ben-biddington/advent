@@ -8,7 +8,7 @@ const minimize = (input: string) => {
     .map(it => parseInt(it))
     .sort((a, b) => a - b);
 
-  let max = distances[distances.length-1] * 5;
+  let max = distances[distances.length-1] * 200;
   let min = max;
 
   // https://www.geeksforgeeks.org/optimum-location-point-minimize-total-distance/
@@ -30,5 +30,11 @@ describe.only('--- Day 7: The Treachery of Whales --- (part one)', () => {
   it(`This is the cheapest possible outcome (the given example)`, () => {
     const input = `16,1,2,0,4,2,7,1,2,14`;
     expect(minimize(input)).to.eql(37);
+  });
+
+  it(`Real example`, () => {
+    const input = fs.readFileSync('./input/seven').toString();
+
+    expect(minimize(input)).to.eql(353800);
   });
 });
