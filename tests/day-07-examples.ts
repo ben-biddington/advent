@@ -3,10 +3,7 @@ import { range, sum } from "core/array-extensions";
 import * as fs from 'fs';
 
 const minimizeDistance = (input: string) => {
-  const distances = input
-    .split(',')
-    .map(it => parseInt(it))
-    .sort((a, b) => a - b);
+  const distances = parse(input);
 
   let max = distances[distances.length-1] * 200;
   let min = max;
@@ -29,20 +26,14 @@ const minimizeDistance = (input: string) => {
 const fuelUsed = (moveCount: number) => sum(range(1, moveCount));
 
 const minimizeFuel = (input: string) => {
-  const distances = input
-    .split(',')
-    .map(it => parseInt(it))
-    .sort((a, b) => a - b);
+  const distances = parse(input);
 
   let last = 0;
 
   // [i] Start from zero and move right until numbers start to increase
   for (let position = 0; position >= 0; position++) {
-    const current = sum(distances.map(n => {
-        const distanceMoved = Math.max(position, n) - Math.min(position, n);
-     
-        return fuelUsed(distanceMoved);
-      }
+    const current = sum(distances.map(n => 
+      fuelUsed(Math.max(position, n) - Math.min(position, n))
     ));
 
     if (position == 0) {
@@ -57,6 +48,11 @@ const minimizeFuel = (input: string) => {
 
   return last;
 }
+
+const parse = (input: string) => input
+  .split(',')
+  .map(it => parseInt(it))
+  .sort((a, b) => a - b);
 
 describe('--- Day 7: The Treachery of Whales --- (part one)', () => {
   it(`Minimise distance`, () => {
