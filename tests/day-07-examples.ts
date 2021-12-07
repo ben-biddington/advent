@@ -19,16 +19,17 @@ const minimize = (
 ) => {
   const distances = parse(input);
 
-  let last = sum(distances.map(n => operator(0, n)));;
-
   // [i] Start from zero and move right until numbers start to increase
-  for (let position = 1; position >= 0; position++) {
-    const current = sum(distances.map(n => operator(position, n)));
 
-    if (current > last)
-      return last;
+  let currentMinimum = sum(distances.map(n => operator(0, n)));;
+
+  for (let position = 1; position >= 0; position++) {
+    const next = sum(distances.map(n => operator(position, n)));
+
+    if (next > currentMinimum)
+      return currentMinimum;
     
-    last = current;
+    currentMinimum = next;
   }
 }
 
