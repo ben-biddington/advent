@@ -50,6 +50,7 @@ const parse = (input: string) => input
 describe('--- Day 7: The Treachery of Whales --- (part one)', () => {
   it(`Minimise distance`, () => {
     const input = `16,1,2,0,4,2,7,1,2,14`;
+
     expect(minimizeDistance(input)).to.eql(37);
   });
 
@@ -63,6 +64,7 @@ describe('--- Day 7: The Treachery of Whales --- (part one)', () => {
 describe('--- Day 7: The Treachery of Whales --- (part two)', () => {
   it('Minimise fuel', () => {
     const input = `16,1,2,0,4,2,7,1,2,14`;
+  
     expect(minimizeFuel(input)).to.eql(168);
   });
 
