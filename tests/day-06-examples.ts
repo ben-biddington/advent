@@ -1,8 +1,6 @@
 import { expect } from "chai";
 import { sum } from "core/array-extensions";
 import * as fs from 'fs';
-import * as path from 'path';
-import { v4 as uuidv4 } from 'uuid';
 
 class School {
   private counts: Map<number,number> = new Map();
@@ -40,8 +38,8 @@ class School {
       this.counts.set(n - 1, currentValue);
     });
 
-    this.counts.set(8, reproducingCount);             // new fish
-    this.counts.set(6, reproducingCount + (this.counts.get(6) || 0));  // parents + what were there before
+    this.counts.set(8, reproducingCount);                               // new fish
+    this.counts.set(6, reproducingCount + (this.counts.get(6) || 0));   // parents + what were there before
   }
 }
 
@@ -86,6 +84,18 @@ describe('--- Day 6: Lanternfish --- --- (part one)', () => {
     expect(school.total).to.eql(5934);
   });
 
+  it(`How many lanternfish would there be after 256 days`, () => {
+    const input = `3,4,3,1,2`
+
+    const fish = parse(input);
+
+    const school = new School(fish);
+    
+    school.tick(256);
+
+    expect(school.total).to.eql(26984457539);
+  });
+
   it(`Real example`, () => {
     const input = fs.readFileSync('./input/six').toString();
 
@@ -93,8 +103,8 @@ describe('--- Day 6: Lanternfish --- --- (part one)', () => {
 
     const school = new School(fish);
     
-    school.tick(80);
+    school.tick(256);
 
-    expect(school.total).to.eql(385391);
+    expect(school.total).to.eql(1728611055389);
   });
 });
