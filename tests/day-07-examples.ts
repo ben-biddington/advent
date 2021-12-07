@@ -27,7 +27,7 @@ const minimize = (
 
     if (position == 0) {
       last = current;
-    } else if (position > 0) {
+    } else {
       if (current > last)
         break;
       
