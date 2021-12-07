@@ -26,12 +26,10 @@ const minimize = (
     const current = sum(distances.map(n => operator(position, n)));
 
     if (current > last)
-      break;
+      return last;
     
     last = current;
   }
-
-  return last;
 }
 
 const parse = (input: string) => input
