@@ -34,16 +34,6 @@ const minimizeFuel = (input: string) => {
     .map(it => parseInt(it))
     .sort((a, b) => a - b);
 
-  const fuelCache = new Map<number,number>();
-
-  const getFuelUsed = (distance: number) : number => {
-    if (false == fuelCache.has(distance)) { 
-      fuelCache.set(distance, fuelUsed(distance));
-    }
-    
-    return fuelCache.get(distance) || 0;
-  }
-
   let last = 0;
 
   // [i] Start from zero and move right until numbers start to increase
@@ -51,7 +41,7 @@ const minimizeFuel = (input: string) => {
     const current = sum(distances.map(n => {
         const distanceMoved = Math.max(position, n) - Math.min(position, n);
      
-        return getFuelUsed(distanceMoved);
+        return fuelUsed(distanceMoved);
       }
     ));
 
