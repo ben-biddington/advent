@@ -40,8 +40,7 @@ const minimize = (
 
 const parse = (input: string) => input
   .split(',')
-  .map(it => parseInt(it))
-  .sort((a, b) => a - b);
+  .map(it => parseInt(it));
 
 describe('--- Day 7: The Treachery of Whales --- (part one)', () => {
   it(`Minimise distance`, () => {
