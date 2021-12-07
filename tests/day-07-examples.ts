@@ -3,43 +3,31 @@ import { range, sum } from "core/array-extensions";
 import * as fs from 'fs';
 
 const minimizeDistance = (input: string) => {
-  const distances = parse(input);
-
-  // https://www.geeksforgeeks.org/optimum-location-point-minimize-total-distance/
-
-  let last = 0;
-
-  // [i] Start from zero and move right until numbers start to increase
-  for (let position = 0; position >= 0; position++) {
-    const current = sum(distances.map(n => 
-      Math.max(position, n) - Math.min(position, n)
-    ));
-
-    if (position == 0) {
-      last = current;
-    } else if (position > 0) {
-      if (current > last)
-        break;
-      
-      last = current;
-    }
-  }
-
-  return last;
+  return minimize(input, (position, distance) =>
+    Math.max(position, distance) - Math.min(position, distance)
+  );
 }
 
-const fuelUsed = (moveCount: number) => sum(range(1, moveCount));
-
 const minimizeFuel = (input: string) => {
+  const fuelUsed = (moveCount: number) => sum(range(1, moveCount));
+  
+  return minimize(input, (position, distance) => 
+    fuelUsed(Math.max(position, distance) - Math.min(position, distance))
+  );
+}
+
+// https://www.geeksforgeeks.org/optimum-location-point-minimize-total-distance/
+const minimize = (
+  input: string,
+  operator: (position: number, distance: number) => number
+) => {
   const distances = parse(input);
 
   let last = 0;
 
   // [i] Start from zero and move right until numbers start to increase
   for (let position = 0; position >= 0; position++) {
-    const current = sum(distances.map(n => 
-      fuelUsed(Math.max(position, n) - Math.min(position, n))
-    ));
+    const current = sum(distances.map(n => operator(position, n)));
 
     if (position == 0) {
       last = current;
