@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { range, sum } from "core/array-extensions";
 import * as fs from 'fs';
 
-const minimize = (input: string) => {
+const minimizeDistance = (input: string) => {
   const distances = input
     .split(',')
     .map(it => parseInt(it))
@@ -26,19 +26,8 @@ const minimize = (input: string) => {
   return min;
 }
 
-const fuelUsed = (moveCount: number) => {
-  let result = 0;
+const fuelUsed = (moveCount: number) => sum(range(1, moveCount));
 
-  for (let index = 1; index <= moveCount; index++) {
-    result += index;    
-  }
-
-  return result;
-
-  return sum(range(1, moveCount));
-}
-
-// Two calculations: distance and fuel used
 const minimizeFuel = (input: string) => {
   const distances = input
     .split(',')
@@ -55,9 +44,9 @@ const minimizeFuel = (input: string) => {
     return fuelCache.get(distance) || 0;
   }
 
-  let last    = 0;
+  let last = 0;
 
-  // Start from zero and move right until numbers start to increase
+  // [i] Start from zero and move right until numbers start to increase
   for (let position = 0; position >= 0; position++) {
     const current = sum(distances.map(n => {
         const distanceMoved = Math.max(position, n) - Math.min(position, n);
@@ -80,20 +69,20 @@ const minimizeFuel = (input: string) => {
 }
 
 describe('--- Day 7: The Treachery of Whales --- (part one)', () => {
-  it(`This is the cheapest possible outcome (the given example)`, () => {
+  it(`Minimise distance`, () => {
     const input = `16,1,2,0,4,2,7,1,2,14`;
-    expect(minimize(input)).to.eql(37);
+    expect(minimizeDistance(input)).to.eql(37);
   });
 
   it(`Real example`, () => {
     const input = fs.readFileSync('./input/seven').toString();
 
-    expect(minimize(input)).to.eql(353800);
+    expect(minimizeDistance(input)).to.eql(353800);
   });
 });
 
 describe('--- Day 7: The Treachery of Whales --- (part two)', () => {
-  it(`Minimise fuel`, () => {
+  it('Minimise fuel', () => {
     const input = `16,1,2,0,4,2,7,1,2,14`;
     expect(minimizeFuel(input)).to.eql(168);
   });
@@ -102,5 +91,17 @@ describe('--- Day 7: The Treachery of Whales --- (part two)', () => {
     const input = fs.readFileSync('./input/seven').toString();
 
     expect(minimizeFuel(input)).to.eql(98119739);
+  });
+});
+
+describe('Range (array of integers)', () => {
+  it(`Examples`, () => {
+    expect(range(0, 0)).to.eql([]);
+    expect(range(0, 1)).to.eql([0]);
+
+    expect(range(1, 1)).to.eql([1]);
+    expect(range(1, 3)).to.eql([1,2,3]);
+
+    expect(range(1, 10)).to.eql([1,2,3,4,5,6,7,8,9,10]);
   });
 });
