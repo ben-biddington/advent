@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import * as fs from 'fs';
+import { OPEN_CREATE } from "sqlite3";
 
 class LanternFish {
   public timer: number = 0;
@@ -54,7 +55,7 @@ const parse = (input: string): LanternFish[] => {
   return input.split(',').map(it => parseInt(it)).map(age => new LanternFish(age));
 }
 
-describe.only('--- Day 6: Lanternfish --- --- (part one)', () => {
+describe('--- Day 6: Lanternfish --- --- (part one)', () => {
   it(`learning examples`, () => {
     const input = `3,4,3,1,2`
 
@@ -100,16 +101,26 @@ describe.only('--- Day 6: Lanternfish --- --- (part one)', () => {
   });
 
   // [!] FATAL ERROR: MarkCompactCollector: young object promotion failed Allocation failed - JavaScript heap out of memory
+  //     try using just numbers?
+  //     try storing in a file? Works better but still no good. Loading all into memory isn't going to work. 90MB file at last failed attempt.
   it.skip(`How many lanternfish would there be after 256 days`, () => {
     const input = `3,4,3,1,2`
 
+    const fileName = './temp';
+
+    fs.writeFileSync(fileName, input);
+
     const fish = parse(input);
 
-    const school = new School(fish);
-    
-    school.tick(256);
+    for (let index = 0; index < 256; index++) {
+      const school = new School(parse(fs.readFileSync(fileName).toString()));
+      school.tick();
+      fs.writeFileSync(fileName, school.report());
+    }
 
-    expect(school.total).to.eql(26984457539);
+    const result = new School(parse(fs.readFileSync(fileName).toString())).total;
+
+    expect(result).to.eql(26984457539);
   });
 
   it(`Real example`, () => {
