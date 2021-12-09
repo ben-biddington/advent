@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { sum } from "core/array-extensions";
 import { lines } from "core/internal/text";
 import * as fs from 'fs';
 // The digits 1, 4, 7, and 8 each use a unique number of segments
