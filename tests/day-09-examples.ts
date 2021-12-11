@@ -3,12 +3,6 @@ import { sum } from "core/array-extensions";
 import { lines } from "core/internal/text";
 import * as fs from 'fs';
 
-class Board {
-  constructor(input: string) {
-
-  }
-}
-
 type Adjacents = { 
   top?: number | undefined, 
   right?: number | undefined, 
@@ -22,7 +16,7 @@ const lowPoints = (input: string) => {
   const columnCount = matrix[0].length;
   const rowCount    = matrix.length;
 
-  const lowPoints = [];
+  const lowPoints: number[][] = [];
 
   for (let columnIndex = 0; columnIndex < columnCount; columnIndex++) {
     for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
@@ -81,7 +75,7 @@ const matrixFrom = (input: string) => {
   });
 }
 
-describe('--- Day 9: Smoke Basin ---', () => {
+describe('--- Day 9: Smoke Basin --- (part)', () => {
   it('The given example, find low points', () => {
     const input = `
     2199943210
@@ -218,5 +212,94 @@ describe('--- Day 9: Smoke Basin ---', () => {
     });
 
     expect(sum(riskFactors)).to.eql(436);
+  });
+});
+
+type Point = { x: number, y: number, height?: number };
+
+class SeenList {
+  private seen: Point[] = [];
+
+  add = (...points: Point[]): number => {
+    const unseen = points.filter(p => false == this.seen.some(it => it.x == p.x && it.y == p.y));
+
+    this.seen.push(...unseen);
+
+    return unseen.length;
+  }
+
+  get points() {
+    return this.seen;
+  }
+}
+
+const explore = (matrix: number[][], startPoint: Point, seen?: SeenList): SeenList => {
+  seen = seen || new SeenList();
+
+  const surrounds = expand(matrix, startPoint);
+
+  const numberAdded = seen.add(...surrounds);
+
+  if (numberAdded > 0) {
+    surrounds.map(it => explore(matrix, it, seen));
+  }
+
+  return seen;
+}
+
+const expand = (matrix: number[][], point: Point): Point[] => {
+  const rowLength = matrix[0].length;
+  const rowCount  = matrix.length;
+
+  const above = point.y > 0             ? { ...point, y: point.y - 1 } : undefined;
+  const right = point.x < rowLength -1  ? { ...point, x: point.x + 1 } : undefined;
+  const below = point.y < rowCount - 1  ? { ...point, y: point.y + 1 } : undefined;
+  const left  = point.x > 0             ? { ...point, x: point.x - 1 } : undefined;
+
+  // @ts-ignore
+  return [ above, right, below, left ]
+    .filter(it => it !== undefined)
+    .filter(p => {
+      // @ts-ignore
+      return matrix[p.y][p.x] < 9;
+    }).map(point => {
+      // @ts-ignore
+      return {...point }
+    });
+}
+
+describe('--- Day 9: Smoke Basin --- (part two)', () => {
+  it('The given example, find low points', () => {
+    const input = `
+    2199943210
+    3987894921
+    9856789892
+    8767896789
+    9899965678
+    `;
+
+    const matrix = matrixFrom(input);
+
+    const allBasinSizes = lowPoints(input).map((low: number[]) => {
+      return explore(matrix, { x: low[0], y: low[1] }).points.length;
+    });
+
+    const largestThree = allBasinSizes.sort((a,b) => b - a).slice(0,3);
+    
+    expect(largestThree.reduce((a,b) => a*b)).to.eql(1134);
+  });
+
+  it('The real example', () => {
+    const input = fs.readFileSync('./input/nine').toString();
+
+    const matrix = matrixFrom(input);
+
+    const allBasinSizes = lowPoints(input).map((low: number[]) => {
+      return explore(matrix, { x: low[0], y: low[1] }).points.length;
+    });
+
+    const largestThree = allBasinSizes.sort((a,b) => b - a).slice(0,3);
+    
+    expect(largestThree.reduce((a,b) => a*b)).to.eql(1317792);
   });
 });
