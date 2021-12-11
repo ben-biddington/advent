@@ -38,4 +38,18 @@ export default class Matrix<T> {
   at(i: number, j: number): T {
     return this.entries[i]?.[j];
   }
+
+  neighbours(i: number, j: number): T[] {
+    const self = this.at(i,j);
+
+    if (self === undefined) // [i] Out of bounds
+      return [];
+
+    return [ 
+      this.at(i - 1, j - 1),  this.at(i - 1, j)  , this.at(i - 1, j + 1),
+      this.at(i, j - 1),this.at(i, j + 1),
+      this.at(i + 1, j - 1),  this.at(i + 1, j)  , this.at(i + 1, j + 1),
+    ]
+    .filter(it => it !== undefined) as T[];
+  }
 }
