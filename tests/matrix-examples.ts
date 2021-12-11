@@ -1,7 +1,7 @@
 
 import { expect } from "chai";
 import { lines } from "core/internal/text";
-import  Matrix, { Size } from 'core/matrix';
+import Matrix, { Size } from 'core/matrix';
 
 const parse = (input: string, size: Size) : Matrix<number> => {
   const matrix = new Matrix<number>(size);
@@ -23,7 +23,7 @@ const parse = (input: string, size: Size) : Matrix<number> => {
   return matrix;
 }
 
-describe.only('Matrices', () => {
+describe('Matrices', () => {
   it('Examples', () => {
     const input = `
        1   2   3   4   5
@@ -72,5 +72,59 @@ describe.only('Matrices', () => {
 
     expect(matrix.neighbours(-1, -1)).to.eql([]);
     expect(matrix.neighbours(5, 5)).to.eql([]);
+  });
+
+  it('Iterating', () => {
+    const input = `
+       1   2   3   4   5
+       6   7   8   9  10
+      11  12  13  14  15
+      16  17  18  19  20
+      21  22  23  24  25
+    `
+
+    const matrix = parse(input, { rows: 5, columns: 5 });
+
+    const actual: number[] = [];
+
+    matrix.forEach((entry) => actual.push(entry.value));
+
+    expect(actual).to.eql([
+      1,2,3,4,5,6,7,8,9,10,
+      11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]);
+  });
+
+  it('Mapping', () => {
+    const input = `
+       1   2   3   4   5
+       6   7   8   9  10
+      11  12  13  14  15
+      16  17  18  19  20
+      21  22  23  24  25
+    `
+
+    const matrix = parse(input, { rows: 5, columns: 5 });
+
+    const actual: number[] = matrix.map((entry) => entry.value);
+
+    expect(actual).to.eql([
+      1,2,3,4,5,6,7,8,9,10,
+      11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]);
+  });
+
+  it('Listing', () => {
+    const input = `
+       1   2   3   4   5
+       6   7   8   9  10
+      11  12  13  14  15
+      16  17  18  19  20
+      21  22  23  24  25
+    `
+
+    const matrix = parse(input, { rows: 5, columns: 5 });
+
+    expect(matrix.values()).to.eql([
+      1,2,3,4,5,6,7,8,9,10,
+      11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]);
   });
 });

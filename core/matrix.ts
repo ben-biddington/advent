@@ -39,6 +39,10 @@ export default class Matrix<T> {
     return this.entries[i]?.[j];
   }
 
+  values(): T[] {
+    return this.map(it => it.value);
+  }
+
   neighbours(i: number, j: number): T[] {
     const self = this.at(i,j);
 
@@ -51,5 +55,31 @@ export default class Matrix<T> {
       this.at(i + 1, j - 1),  this.at(i + 1, j)  , this.at(i + 1, j + 1),
     ]
     .filter(it => it !== undefined) as T[];
+  }
+
+  forEach(fn: (entry: Entry<T>) => void) {
+    for (let row = 0; row < this.size.rows; row++) {
+      for (let column = 0; column < this.size.columns; column++) {
+        fn({
+          postion: { row, column },
+          value: this.at(row, column)
+        })
+      }
+    }
+  }
+
+  map(fn: (entry: Entry<T>) => T) : T[] {
+    const result: T[] = [];
+
+    for (let row = 0; row < this.size.rows; row++) {
+      for (let column = 0; column < this.size.columns; column++) {
+        result.push(fn({
+          postion: { row, column },
+          value: this.at(row, column)
+        }))
+      }
+    }
+
+    return result;
   }
 }
