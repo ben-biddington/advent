@@ -43,6 +43,24 @@ export default class Matrix<T> {
     return this.map(it => it.value);
   }
 
+  report(fn: (entry: T) => string): string  {
+    const values = this.values().map(fn);
+
+    const lines: string[] = [];
+
+    let index = 0;
+
+    while (index < values.length) {
+      const slice = values.slice(index, index + this.size.columns);
+
+      lines.push(slice.join(''));
+
+      index += this.size.columns;
+    }
+
+    return lines.join('\n'); 
+  }
+
   neighbours(i: number, j: number): T[] {
     const self = this.at(i,j);
 
@@ -76,7 +94,7 @@ export default class Matrix<T> {
         result.push(fn({
           postion: { row, column },
           value: this.at(row, column)
-        }))
+        }));
       }
     }
 

@@ -30,9 +30,37 @@ const parse = (input: string, size: Size) : Matrix<Octopus> => {
 class Octopus {
   energy: number = 0;
   private neighbours: Octopus[] = [];
+  hasFlashed = false;
 
   constructor(energy: number) {
     this.energy = energy;
+  }
+
+  step() {
+    this.hasFlashed = false;
+    this.increment();
+  }
+
+  increment() {
+    if (this.energy <= 9) {
+      this.energy += 1;
+    }
+  }
+
+  notify() {
+    if (false === this.hasFlashed) {
+      this.increment();
+      this.flash();
+    }
+  }
+
+  flash() {
+    if (this.energy > 9 && false == this.hasFlashed) {
+      this.energy = 0;
+      this.hasFlashed = true;
+
+      this.neighbours.forEach(it => it.notify());
+    }
   }
 
   introduce(neighbours: Octopus[]) {
@@ -41,7 +69,47 @@ class Octopus {
 }
 
 describe.only('--- Day 11: Dumbo Octopus --- (part one)', () => {
-  it('abc', () => {
+  it('Pulsing at 9', () => {
+    const input = `
+    11111
+    19991
+    19191
+    19991
+    11111
+    `
+
+    const matrix = parse(input, { columns: 5, rows: 5 });
+
+    // 1 
+    matrix.forEach(it => it.value.step());
+    matrix.forEach(it => it.value.flash());
+
+    expect(matrix.report(it => it.energy.toString())).to.eql(
+    `
+34543
+40004
+50005
+40004
+34543
+    `.trim()
+    );
+
+    // 2
+    matrix.forEach(it => it.value.step());
+    matrix.forEach(it => it.value.flash());
+
+    expect(matrix.report(it => it.energy.toString())).to.eql(
+    `
+45654
+51115
+61116
+51115
+45654
+    `.trim()
+    );
+  });
+
+  it('Larger examples', () => {
     const input = `
     5483143223
     2745854711
@@ -57,9 +125,99 @@ describe.only('--- Day 11: Dumbo Octopus --- (part one)', () => {
 
     const matrix = parse(input, { columns: 10, rows: 10 });
 
-    expect(matrix.at(0,0).energy).to.eql(5);
-    expect(matrix.at(9,9).energy).to.eql(6);
+    // 1
+    matrix.forEach(it => it.value.step());
+    matrix.forEach(it => it.value.flash());
 
-    expect(matrix.at(-1,-1)).to.be.undefined;
+    expect(matrix.report(it => it.energy.toString())).to.eql(
+    `
+6594254334
+3856965822
+6375667284
+7252447257
+7468496589
+5278635756
+3287952832
+7993992245
+5957959665
+6394862637
+    `.trim()
+    );
+
+    // 2
+    matrix.forEach(it => it.value.step());
+    matrix.forEach(it => it.value.flash());
+
+    expect(matrix.report(it => it.energy.toString())).to.eql(
+    `
+8807476555
+5089087054
+8597889608
+8485769600
+8700908800
+6600088989
+6800005943
+0000007456
+9000000876
+8700006848
+    `.trim()
+    );
+
+    // 3
+    matrix.forEach(it => it.value.step());
+    matrix.forEach(it => it.value.flash());
+
+    expect(matrix.report(it => it.energy.toString())).to.eql(
+    `
+0050900866
+8500800575
+9900000039
+9700000041
+9935080063
+7712300000
+7911250009
+2211130000
+0421125000
+0021119000
+    `.trim()
+    );
+
+    // 4
+    matrix.forEach(it => it.value.step());
+    matrix.forEach(it => it.value.flash());
+
+    expect(matrix.report(it => it.energy.toString())).to.eql(
+    `
+2263031977
+0923031697
+0032221150
+0041111163
+0076191174
+0053411122
+0042361120
+5532241122
+1532247211
+1132230211
+    `.trim()
+    );
+
+    // 5
+    matrix.forEach(it => it.value.step());
+    matrix.forEach(it => it.value.flash());
+
+    expect(matrix.report(it => it.energy.toString())).to.eql(
+    `
+4484144000
+2044144000
+2253333493
+1152333274
+1187303285
+1164633233
+1153472231
+6643352233
+2643358322
+2243341322
+    `.trim()
+    );
   });
 });
