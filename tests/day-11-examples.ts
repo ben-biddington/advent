@@ -68,7 +68,7 @@ class Octopus {
   }
 }
 
-describe.only('--- Day 11: Dumbo Octopus --- (part one)', () => {
+describe('--- Day 11: Dumbo Octopus --- (part one)', () => {
   it('Pulsing at 9', () => {
     const input = `
     11111
@@ -262,5 +262,54 @@ describe.only('--- Day 11: Dumbo Octopus --- (part one)', () => {
 2243341322
     `.trim()
     );
+  });
+});
+
+describe('--- Day 11: Dumbo Octopus --- (part two)', () => {
+  it('synchronized flashes', () => {
+    const input = `
+    5483143223
+    2745854711
+    5264556173
+    6141336146
+    6357385478
+    4167524645
+    2176841721
+    6882881134
+    4846848554
+    5283751526
+    `
+
+    const matrix = parse(input, { columns: 10, rows: 10 });
+
+    let done = false;
+    let generations = 0;
+    
+    while (!done) {
+      matrix.forEach(it => it.value.step());
+      matrix.forEach(it => it.value.flash());
+      generations++;
+      done = matrix.values().filter(it => it.energy === 0).length === 100;
+    }
+
+    expect(generations).to.eql(195);
+  });
+
+  it('The real example', () => {
+    const input = fs.readFileSync('./input/eleven').toString();
+
+    const matrix = parse(input, { columns: 10, rows: 10 });
+
+    let done = false;
+    let generations = 0;
+    
+    while (!done) {
+      matrix.forEach(it => it.value.step());
+      matrix.forEach(it => it.value.flash());
+      generations++;
+      done = matrix.values().filter(it => it.energy === 0).length === 100;
+    }
+
+    expect(generations).to.eql(510);
   });
 });
