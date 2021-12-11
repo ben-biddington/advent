@@ -109,7 +109,50 @@ describe.only('--- Day 11: Dumbo Octopus --- (part one)', () => {
     );
   });
 
-  it('Larger examples', () => {
+  it('100 steps', () => {
+    const input = `
+    5483143223
+    2745854711
+    5264556173
+    6141336146
+    6357385478
+    4167524645
+    2176841721
+    6882881134
+    4846848554
+    5283751526
+    `
+
+    const matrix = parse(input, { columns: 10, rows: 10 });
+
+    let flashes = 0;
+
+    for (let index = 0; index < 100; index++) {
+      matrix.forEach(it => it.value.step());
+      matrix.forEach(it => it.value.flash());
+      flashes += matrix.values().filter(it => it.energy === 0).length;
+    }
+
+    expect(flashes).to.eql(1656);
+  });
+
+  it('100 steps, actual example', () => {
+    const input = fs.readFileSync('./input/eleven').toString();
+
+    const matrix = parse(input, { columns: 10, rows: 10 });
+
+    let flashes = 0;
+
+    for (let index = 0; index < 100; index++) {
+      matrix.forEach(it => it.value.step());
+      matrix.forEach(it => it.value.flash());
+      flashes += matrix.values().filter(it => it.energy === 0).length;
+    }
+
+    expect(flashes).to.eql(1613);
+  });
+
+  it('Larger example', () => {
     const input = `
     5483143223
     2745854711
