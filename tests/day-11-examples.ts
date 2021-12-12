@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { lines } from "core/internal/text";
+import { lines } from "core/text";
 import Matrix, { Size } from "core/matrix";
 import * as fs from 'fs';
 

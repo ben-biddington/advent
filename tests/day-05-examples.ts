@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { expect } from 'chai';
-import { lines } from 'core/internal/text';
+import { lines } from 'core/text';
 
 type Coordinates = {
   x: number;

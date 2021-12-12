@@ -1,6 +1,6 @@
 
 import { expect } from "chai";
-import { lines } from "core/internal/text";
+import { lines } from "core/text";
 import Matrix, { Size } from 'core/matrix';
 
 const parse = (input: string, size: Size) : Matrix<number> => {

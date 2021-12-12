@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { sum } from "core/array-extensions";
-import { lines } from "core/internal/text";
-import { reverse } from "dns";
+import { lines } from "core/text";
 import * as fs from 'fs';
 
 type Token = {

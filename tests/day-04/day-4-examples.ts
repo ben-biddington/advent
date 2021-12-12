@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { expect } from 'chai';
-import { lines } from 'core/internal/text';
+import { lines } from 'core/text';
 import BingoGame from 'core/bingo/bingo-game';
 import Board from 'core/bingo/board';
 

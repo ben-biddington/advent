@@ -1,5 +1,5 @@
 import { fromBinary } from "core/internal/numbers";
-import { lines } from "core/internal/text";
+import { lines } from "core/text";
 import { BitCriteria, leastCommonBit, mostCommonBit } from "core/internal/bit-vector";
 
 // https://adventofcode.com/2021/day/3

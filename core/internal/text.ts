@@ -1,1 +1,0 @@
-export const lines = (text: string) => text.split('\n').map(it => it.trim()).filter(it => it.length > 0);

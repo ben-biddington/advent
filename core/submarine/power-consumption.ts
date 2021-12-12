@@ -1,4 +1,4 @@
-import { lines } from 'core/internal/text';
+import { lines } from 'core/text';
 import { mostCommonBit, leastCommonBit } from 'core/internal/bit-vector';
 
 // https://adventofcode.com/2021/day/3

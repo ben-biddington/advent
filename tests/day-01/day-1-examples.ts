@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
 import { sum } from 'core/array-extensions';
-import { lines } from 'core/internal/text';
+import { lines } from 'core/text';
 
 const getIncreases = (numbers: number[]) => {
   return numbers.filter((value, index) => {
