@@ -56,11 +56,7 @@ describe('--- Day 12: Passage Pathing --- (part one)', () => {
 
     const path = new Path(segments);
 
-    //path.debug();
-
     const result = path.follow('start');
-
-    // Given these rules, there are 10 paths through this example cave system:
 
     expect(result.length).to.eql(10);
 
@@ -169,9 +165,7 @@ describe('--- Day 12: Passage Pathing --- (part two)', () => {
     b-end
     `;
 
-    const path = new Path(parse(input));
-
-    path.loose();
+    const path = new Path(parse(input), { loose: true });
 
     const result = path.follow('start');
 
@@ -230,9 +224,7 @@ describe('--- Day 12: Passage Pathing --- (part two)', () => {
     kj-dc
     `;
 
-    const path = new Path(parse(input));
-
-    path.loose();
+    const path = new Path(parse(input), { loose: true });
 
     expect(path.follow('start').length).to.eql(103);
   });
@@ -259,9 +251,7 @@ describe('--- Day 12: Passage Pathing --- (part two)', () => {
     start-RW
     `;
 
-    const path = new Path(parse(input));
-
-    path.loose();
+    const path = new Path(parse(input), { loose: true });
 
     expect(path.follow('start').length).to.eql(3509);
   });
@@ -269,9 +259,7 @@ describe('--- Day 12: Passage Pathing --- (part two)', () => {
   it('The real example', () => {
     const input = fs.readFileSync('./input/twelve').toString();
 
-    const path = new Path(parse(input));
-
-    path.loose();
+    const path = new Path(parse(input), { loose: true });
 
     expect(path.follow('start').length).to.eql(96988);
   });
