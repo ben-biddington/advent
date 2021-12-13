@@ -22,9 +22,8 @@ export default class Path {
   follow(cave: string) : string[] {
     this.history.record(cave);
 
-    if (cave === 'end') {
+    if (cave === 'end')
       return [this.progressReport()];
-    }
 
     // [!] Can go backwards or forwards
     const allDestinations = [
@@ -32,21 +31,22 @@ export default class Path {
       ...this.segments.endingAt(cave).map(it => it.start)
     ].filter(it => it != 'start');
 
-    const nextAvailableCaves = allDestinations.filter(this.history.allow);
+    const allAllowedDestinationCaves = allDestinations.filter(this.history.allow);
     
-    return nextAvailableCaves
-      .map((cave) => {
-        const path = new Path(
-          this.segments, 
-          this.history.clone(), // [!] Copying progress very important!
-        ); 
-        
-        if (this._debug) {
-          path.debug();
-        }
+    return allAllowedDestinationCaves.map((cave) => this.clone().follow(cave)).flat();
+  }
 
-        return path.follow(cave);
-      }).flat();
+  private clone() {
+    const path = new Path(
+      this.segments, 
+      this.history.clone(), // [!] Cloning very important!
+    ); 
+    
+    if (this._debug) {
+      path.debug();
+    }
+
+    return path;
   }
 
   private progressReport() {
