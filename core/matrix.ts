@@ -118,6 +118,15 @@ export default class Matrix<T> {
     ]
   }
 
+  flip(axis: 'x'|'y'): Matrix<T> {
+    if (axis === 'x') {
+      const entries = [...this.entries].reverse();
+      return this.createFrom<T>(entries);
+    }
+
+    throw new Error(`Flipping arond <${axis}> axis not yet supported`);
+  }
+
   private createFrom<T>(entries: T[][]) : Matrix<T> {
     const result = new Matrix<T>({ rows: entries.length, columns: entries[0].length });
     result.entries = entries;
