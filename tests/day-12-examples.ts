@@ -156,3 +156,123 @@ start,b,end`))
     expect(isLowerCase('A')).to.be.false;
   });
 });
+
+describe('--- Day 12: Passage Pathing --- (part two)', () => {
+  it('The given example', () => {
+    const input = `
+    start-A
+    start-b
+    A-c
+    A-b
+    b-d
+    A-end
+    b-end
+    `;
+
+    const path = new Path(parse(input));
+
+    path.loose();
+
+    const result = path.follow('start');
+
+    expect(result.length).to.eql(36);
+
+    expect(result).to.have.members(lines(`
+    start,A,b,A,b,A,c,A,end
+    start,A,b,A,b,A,end
+    start,A,b,A,b,end
+    start,A,b,A,c,A,b,A,end
+    start,A,b,A,c,A,b,end
+    start,A,b,A,c,A,c,A,end
+    start,A,b,A,c,A,end
+    start,A,b,A,end
+    start,A,b,d,b,A,c,A,end
+    start,A,b,d,b,A,end
+    start,A,b,d,b,end
+    start,A,b,end
+    start,A,c,A,b,A,b,A,end
+    start,A,c,A,b,A,b,end
+    start,A,c,A,b,A,c,A,end
+    start,A,c,A,b,A,end
+    start,A,c,A,b,d,b,A,end
+    start,A,c,A,b,d,b,end
+    start,A,c,A,b,end
+    start,A,c,A,c,A,b,A,end
+    start,A,c,A,c,A,b,end
+    start,A,c,A,c,A,end
+    start,A,c,A,end
+    start,A,end
+    start,b,A,b,A,c,A,end
+    start,b,A,b,A,end
+    start,b,A,b,end
+    start,b,A,c,A,b,A,end
+    start,b,A,c,A,b,end
+    start,b,A,c,A,c,A,end
+    start,b,A,c,A,end
+    start,b,A,end
+    start,b,d,b,A,c,A,end
+    start,b,d,b,A,end
+    start,b,d,b,end
+    start,b,end`));
+  });
+
+  it('The larger given example', () => {
+    const input = `
+    dc-end
+    HN-start
+    start-kj
+    dc-start
+    dc-HN
+    LN-dc
+    HN-end
+    kj-sa
+    kj-HN
+    kj-dc
+    `;
+
+    const path = new Path(parse(input));
+
+    path.loose();
+
+    expect(path.follow('start').length).to.eql(103);
+  });
+
+  it('The even larger given example', () => {
+    const input = `
+    fs-end
+    he-DX
+    fs-he
+    start-DX
+    pj-DX
+    end-zg
+    zg-sl
+    zg-pj
+    pj-he
+    RW-he
+    fs-DX
+    pj-RW
+    zg-RW
+    start-pj
+    he-WI
+    zg-he
+    pj-fs
+    start-RW
+    `;
+
+    const path = new Path(parse(input));
+
+    path.loose();
+
+    expect(path.follow('start').length).to.eql(3509);
+  });
+
+  it('The real example', () => {
+    const input = fs.readFileSync('./input/twelve').toString();
+
+    const path = new Path(parse(input));
+
+    path.loose();
+
+    expect(path.follow('start').length).to.eql(96988);
+  });
+});

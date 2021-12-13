@@ -1,4 +1,4 @@
-import { DefaultHistory, History } from "./history";
+import { DefaultHistory, History, LooseHistory } from "./history";
 import { Segments } from "./segments";
 
 export default class Path {
@@ -17,6 +17,10 @@ export default class Path {
     this._debug = true;
   }
 
+  loose() {
+    this.history = new LooseHistory();
+  }
+
   follow(start: string) : string[] {
     this.progress.push(start);
     this.history.record(start);
@@ -28,8 +32,8 @@ export default class Path {
     // [!] Can go backwards or forwards
     const allDestinations = [
       ...this.segments.startingAt(start).map(it => it.end), 
-      ...this.segments.endingAt(start).map(it => it.start).filter(it => it != 'start')
-    ];
+      ...this.segments.endingAt(start).map(it => it.start)
+    ].filter(it => it != 'start');
 
     const nextAvailableCaves = allDestinations.filter(this.history.allow);
     
