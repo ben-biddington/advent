@@ -22,9 +22,6 @@ export class BasicHistory implements History {
   }
 
   allow = (cave: string) => {
-    if (cave == 'end')
-      return true;
-
     return this.mode === Mode.Loose ? this.loose(cave): this.default(cave);
   }
 
