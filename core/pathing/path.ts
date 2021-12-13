@@ -1,4 +1,4 @@
-import { DefaultHistory, History, LooseHistory } from "./history";
+import { History, BasicHistory as BasicHistory, Mode } from "./history";
 import { Segments } from "./segments";
 
 export default class Path {
@@ -8,7 +8,7 @@ export default class Path {
 
   constructor(segments: Segments, history: History | null = null) {
     this.segments = segments;
-    this.history = history || new DefaultHistory();
+    this.history = history || new BasicHistory(Mode.Default);
   }
 
   debug() {
@@ -16,7 +16,7 @@ export default class Path {
   }
 
   loose() {
-    this.history = new LooseHistory();
+    this.history = new BasicHistory(Mode.Loose);
   }
 
   follow(cave: string) : string[] {

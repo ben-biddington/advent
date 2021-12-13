@@ -1,43 +1,17 @@
 import { isLowerCase } from "core/text";
 
-export class DefaultHistory implements History {
-  private history: Map<string,number>;
-  private progress: string[] = [];
-
-  constructor(history: Map<string,number> | null = null, progress: string[] | null = null) {
-    this.history = history || new Map();
-    this.progress = progress || [];
-  }
-
-  record(cave: string) {
-    this.progress.push(cave);
-    this.history.set(cave, (this.history.get(cave) || 0) + 1);
-  }
-
-  allow = (cave: string) => {
-    return cave == 'end' || false == this.caves
-      .filter(isLowerCase)
-      .includes(cave);
-  }
-
-  clone() {
-    return new DefaultHistory(new Map(this.history), [...this.progress]);
-  }
-
-  list() {
-    return [...this.progress];
-  }
-
-  private get caves() {
-    return Array.from(this.history.keys());
-  }
+export enum Mode {
+  Default = 0,
+  Loose = 1
 }
 
-export class LooseHistory implements History {
+export class BasicHistory implements History {
   private history: Map<string,number>;
   private progress: string[] = [];
+  private mode: Mode;
 
-  constructor(history: Map<string,number> | null = null, progress: string[] | null = null) {
+  constructor(mode: Mode, history: Map<string,number> | null = null, progress: string[] | null = null) {
+    this.mode = mode;
     this.history = history || new Map();
     this.progress = progress || [];
   }
@@ -51,6 +25,16 @@ export class LooseHistory implements History {
     if (cave == 'end')
       return true;
 
+    return this.mode === Mode.Loose ? this.loose(cave): this.default(cave);
+  }
+
+  private default(cave: string) {
+    return false == this.caves
+      .filter(isLowerCase)
+      .includes(cave);
+  }
+
+  private loose(cave: string) {
     const smallCaves = this.caves.filter(isLowerCase); 
 
     if (false == smallCaves.includes(cave))
@@ -69,7 +53,7 @@ export class LooseHistory implements History {
   }
 
   clone() {
-    return new LooseHistory(new Map(this.history), [...this.progress]);
+    return new BasicHistory(this.mode, new Map(this.history), [...this.progress]);
   }
 
   list() {
