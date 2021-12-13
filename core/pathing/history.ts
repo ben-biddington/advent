@@ -25,28 +25,19 @@ export class BasicHistory implements History {
     return this.mode === Mode.Loose ? this.loose(cave): this.default(cave);
   }
 
-  private default(cave: string) {
-    return false == this.caves
-      .filter(isLowerCase)
-      .includes(cave);
+  private default(cave: string) : boolean {
+    return false == this.smallCaves.includes(cave);
   }
 
   private loose(cave: string) {
-    const smallCaves = this.caves.filter(isLowerCase); 
-
-    if (false == smallCaves.includes(cave))
+    if (false == this.smallCaves.includes(cave))
       return true;
 
-    const smallCavesVisitedTwice = Array
-      .from(this.history.keys())
-      .filter(isLowerCase)
+    const smallCavesVisitedTwice = this.smallCaves
       .map(key => this.history.get(key))
       .filter(it => it && it > 1);
 
-    if (smallCavesVisitedTwice.length == 0)
-      return true;
-      
-    return false;
+    return smallCavesVisitedTwice.length == 0;
   }
 
   clone() {
@@ -55,6 +46,10 @@ export class BasicHistory implements History {
 
   list() {
     return [...this.progress];
+  }
+
+  private get smallCaves() {
+    return this.caves.filter(isLowerCase);
   }
 
   private get caves() {
