@@ -24,15 +24,12 @@ export default class Path {
     if (cave === 'end')
       return [this.progressReport()];
 
-    // [!] Can go backwards or forwards
-    const allDestinations = [
-      ...this.segments.startingAt(cave).map(it => it.end), 
-      ...this.segments.endingAt(cave).map(it => it.start)
-    ].filter(it => it != 'start');
-
-    const allAllowedDestinationCaves = allDestinations.filter(this.history.allow);
+    const availableCaves = this.segments
+      .connectedTo(cave)
+      .filter(it => it != 'start')
+      .filter(this.history.allow);
     
-    return allAllowedDestinationCaves.map((cave) => this.clone().follow(cave)).flat();
+    return availableCaves.map((cave) => this.clone().follow(cave)).flat();
   }
 
   private clone = () =>

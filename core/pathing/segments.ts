@@ -7,6 +7,21 @@ export class Segments {
     return this.paths.length;
   }
 
+  connectedTo(startNode: string) {
+    return [
+      ...this.endPoints(startNode), 
+      ...this.startPoints(startNode)
+    ]
+  }
+
+  endPoints(startNode: string) {
+    return this.startingAt(startNode).map(it => it.end);
+  }
+
+  startPoints(startNode: string) {
+    return this.endingAt(startNode).map(it => it.start);
+  }
+
   startingAt(startNode: string): Segment[] {
     return this.paths.filter(it => it.start === startNode);
   }
