@@ -19,17 +19,17 @@ export default class Path {
     this.history = new LooseHistory();
   }
 
-  follow(start: string) : string[] {
-    this.history.record(start);
+  follow(cave: string) : string[] {
+    this.history.record(cave);
 
-    if (start === 'end') {
+    if (cave === 'end') {
       return [this.progressReport()];
     }
 
     // [!] Can go backwards or forwards
     const allDestinations = [
-      ...this.segments.startingAt(start).map(it => it.end), 
-      ...this.segments.endingAt(start).map(it => it.start)
+      ...this.segments.startingAt(cave).map(it => it.end), 
+      ...this.segments.endingAt(cave).map(it => it.start)
     ].filter(it => it != 'start');
 
     const nextAvailableCaves = allDestinations.filter(this.history.allow);
