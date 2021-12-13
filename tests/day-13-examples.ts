@@ -1,24 +1,63 @@
 import { expect } from "chai";
-import Path from "core/pathing/path";
-import { Segment, Segments } from "core/pathing/segments";
+import Matrix, { Size } from "core/matrix";
 import { lines } from "core/text";
-import { isThisISOWeek } from "date-fns";
 import * as fs from 'fs';
 
 class Origami {
   private input: string[] = [];
+  private matrix: Matrix<string>;
+  private size: Size;
 
   constructor(input: string[]) {
     this.input = input;
+
+    const points = input
+      .map(it => it.split(','))
+      .map(it => [ parseInt(it[0]), parseInt(it[1]) ]);
+    
+    const largestX = points.map(it => it[0]).sort((a,b) => b - a)[0];
+    const largestY = points.map(it => it[1]).sort((a,b) => b - a)[0];
+
+    this.size = { columns: largestX + 1, rows: largestY + 1 };
+
+    this.matrix = new Matrix(this.size, { defaultValue: '.' });
+
+    points.forEach(([x,y]) => {
+      this.matrix.set(y, x, "#");
+    });
+  }
+
+  apply(folds: Fold[]) {
+    folds.forEach(fold => {
+      if (fold.axis === 'y') {
+        for (let columnIndex = 0; columnIndex < this.size.columns; columnIndex++) {
+          this.matrix.set(fold.value, columnIndex, '-');
+        }
+      }
+      if (fold.axis === 'x') {
+        for (let rowIndex = 0; rowIndex < this.size.rows; rowIndex++) {
+          this.matrix.set(rowIndex, fold.value, '|');
+        }
+      }
+    });
   }
 
   get count() {
     return this.input.length;
   }
+
+  toString() {
+    return this.matrix.report(e => e);
+  }
+}
+
+type Fold = {
+  axis: 'x'|'y';
+  value: number;
 }
 
 type Instructions = {
-  lines: string[];
+  folds: Fold[];
 }
 
 const indexOf = (lines: string[], match: (line: string) => boolean) => {
@@ -38,7 +77,22 @@ const parse = (input: string): [Origami, Instructions] => {
 
   const indexOfBlankLine = indexOf(l, line => line.trim().length === 0);
 
-  return [new Origami(l.slice(0, indexOfBlankLine)), { lines: l.slice(indexOfBlankLine + 1) }];
+  const parseFold = (line: string) : Fold => {
+    const match = line.match(/(?<axis>[y|x])=(?<value>\d+)$/);
+    
+    if (!match)
+      throw new Error(`Failed to parse line <${line}> as fold`);
+    
+    //@ts-ignore
+    return { axis: match?.groups['axis'] , value: parseInt(match?.groups['value']) };
+  }
+
+  const origami = new Origami(l.slice(0, indexOfBlankLine));
+  const folds   = l.slice(indexOfBlankLine + 1).map(parseFold); 
+
+  origami.apply(folds.slice(0, 1));
+
+  return [ origami, { folds }];
 }
 
 describe('--- Day 13: Transparent Origami --- (part one)', () => {
@@ -70,24 +124,35 @@ describe('--- Day 13: Transparent Origami --- (part one)', () => {
     const [origami, instructions] = parse(input);
 
     expect(origami.count).to.eql(18);
-    expect(instructions.lines.length).to.eql(2);
+    expect(instructions.folds).to.eql([
+      { 
+        axis: 'y',
+        value: 7
+      },
+      { 
+        axis: 'x',
+        value: 5
+      },
+    ])
 
     const expected = `
-      ...#..#..#.
-      ....#......
-      ...........
-      #..........
-      ...#....#.#
-      ...........
-      ...........
-      -----------
-      ...........
-      ...........
-      .#....#.##.
-      ....#......
-      ......#...#
-      #..........
-      #.#........
-    `
+...#..#..#.
+....#......
+...........
+#..........
+...#....#.#
+...........
+...........
+-----------
+...........
+...........
+.#....#.##.
+....#......
+......#...#
+#..........
+#.#........
+`
+
+    expect(origami.toString()).to.eql(expected.trim());
   });
 });

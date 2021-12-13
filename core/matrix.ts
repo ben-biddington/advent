@@ -13,11 +13,15 @@ export type Entry<T> = {
   value: T;
 }
 
+export type Options<T> = {
+  defaultValue?: T;
+}
+
 export default class Matrix<T> {
   private readonly size: Size;
   private readonly entries: T[][];
 
-  constructor(size: Size) {
+  constructor(size: Size, opts: Options<T> = {}) {
     this.size = size;
     this.entries = [];
 
@@ -25,7 +29,8 @@ export default class Matrix<T> {
       const newRow: T[] = []; this.entries.push(newRow);
 
       for (let columnIndex = 0; columnIndex < this.size.columns; columnIndex++) {
-        newRow.push();
+        //@ts-ignore
+        newRow.push(opts?.defaultValue);
       }
     }
   }
@@ -37,6 +42,11 @@ export default class Matrix<T> {
   // https://www.math.net/matrix-notation
   at(i: number, j: number): T {
     return this.entries[i]?.[j];
+  }
+
+  // https://www.math.net/matrix-notation
+  set(i: number, j: number, value: T) {
+    this.entries[i][j] = value;
   }
 
   values(): T[] {
