@@ -37,10 +37,6 @@ export default class Path {
 
     const nextAvailableCaves = allDestinations.filter(this.history.allow);
     
-    if (nextAvailableCaves.length === 0) {
-      return []; // Never made it to 'end'
-    }
-
     return nextAvailableCaves
       .map((cave) => {
         const path = new Path(

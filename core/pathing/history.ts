@@ -11,7 +11,6 @@ export class DefaultHistory implements History {
     this.history.set(cave, (this.history.get(cave) || 0) + 1);
   }
 
-  // Disallow any lowercase cave that is not start or end
   allow = (cave: string) => {
     return cave == 'end' || false == this.caves
       .filter(isLowerCase)
@@ -38,7 +37,6 @@ export class LooseHistory implements History {
     this.history.set(cave, (this.history.get(cave) || 0) + 1);
   }
 
-  // Disallow any lowercase cave that is not start or end
   allow = (cave: string) => {
     if (cave == 'end')
       return true;
