@@ -61,16 +61,16 @@ describe('--- Day 12: Passage Pathing --- (part one)', () => {
     expect(result.length).to.eql(10);
 
     expect(result).to.have.members(lines(`
-start,A,b,A,c,A,end
-start,A,b,A,end
-start,A,b,end
-start,A,c,A,b,A,end
-start,A,c,A,b,end
-start,A,c,A,end
-start,A,end
-start,b,A,c,A,end
-start,b,A,end
-start,b,end`))
+      start,A,b,A,c,A,end
+      start,A,b,A,end
+      start,A,b,end
+      start,A,c,A,b,A,end
+      start,A,c,A,b,end
+      start,A,c,A,end
+      start,A,end
+      start,b,A,c,A,end
+      start,b,A,end
+      start,b,end`));
   });
 
   it('The larger given example', () => {
@@ -90,25 +90,25 @@ start,b,end`))
     const path = new Path(parse(input));
 
     expect(path.follow('start')).to.have.members(lines(`
-    start,HN,dc,HN,end
-    start,HN,dc,HN,kj,HN,end
-    start,HN,dc,end
-    start,HN,dc,kj,HN,end
-    start,HN,end
-    start,HN,kj,HN,dc,HN,end
-    start,HN,kj,HN,dc,end
-    start,HN,kj,HN,end
-    start,HN,kj,dc,HN,end
-    start,HN,kj,dc,end
-    start,dc,HN,end
-    start,dc,HN,kj,HN,end
-    start,dc,end
-    start,dc,kj,HN,end
-    start,kj,HN,dc,HN,end
-    start,kj,HN,dc,end
-    start,kj,HN,end
-    start,kj,dc,HN,end
-    start,kj,dc,end`))
+      start,HN,dc,HN,end
+      start,HN,dc,HN,kj,HN,end
+      start,HN,dc,end
+      start,HN,dc,kj,HN,end
+      start,HN,end
+      start,HN,kj,HN,dc,HN,end
+      start,HN,kj,HN,dc,end
+      start,HN,kj,HN,end
+      start,HN,kj,dc,HN,end
+      start,HN,kj,dc,end
+      start,dc,HN,end
+      start,dc,HN,kj,HN,end
+      start,dc,end
+      start,dc,kj,HN,end
+      start,kj,HN,dc,HN,end
+      start,kj,HN,dc,end
+      start,kj,HN,end
+      start,kj,dc,HN,end
+      start,kj,dc,end`));
   });
 
   it('The even larger given example', () => {
