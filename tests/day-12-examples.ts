@@ -17,13 +17,13 @@ const parse = (input: string) => {
 describe('--- Day 12: Passage Pathing --- (part one)', () => {
   it('The given example', () => {
     const input = `
-    start-A
-    start-b
-    A-c
-    A-b
-    b-d
-    A-end
-    b-end
+      start-A
+      start-b
+      A-c
+      A-b
+      b-d
+      A-end
+      b-end
     `;
 
     // Your goal is to find the number of distinct paths that start at start, end at end, 
@@ -75,16 +75,16 @@ describe('--- Day 12: Passage Pathing --- (part one)', () => {
 
   it('The larger given example', () => {
     const input = `
-    dc-end
-    HN-start
-    start-kj
-    dc-start
-    dc-HN
-    LN-dc
-    HN-end
-    kj-sa
-    kj-HN
-    kj-dc
+      dc-end
+      HN-start
+      start-kj
+      dc-start
+      dc-HN
+      LN-dc
+      HN-end
+      kj-sa
+      kj-HN
+      kj-dc
     `;
 
     const path = new Path(parse(input));
@@ -113,24 +113,24 @@ describe('--- Day 12: Passage Pathing --- (part one)', () => {
 
   it('The even larger given example', () => {
     const input = `
-    fs-end
-    he-DX
-    fs-he
-    start-DX
-    pj-DX
-    end-zg
-    zg-sl
-    zg-pj
-    pj-he
-    RW-he
-    fs-DX
-    pj-RW
-    zg-RW
-    start-pj
-    he-WI
-    zg-he
-    pj-fs
-    start-RW
+      fs-end
+      he-DX
+      fs-he
+      start-DX
+      pj-DX
+      end-zg
+      zg-sl
+      zg-pj
+      pj-he
+      RW-he
+      fs-DX
+      pj-RW
+      zg-RW
+      start-pj
+      he-WI
+      zg-he
+      pj-fs
+      start-RW
     `;
 
     const path = new Path(parse(input));
@@ -156,13 +156,13 @@ describe('--- Day 12: Passage Pathing --- (part one)', () => {
 describe('--- Day 12: Passage Pathing --- (part two)', () => {
   it('The given example', () => {
     const input = `
-    start-A
-    start-b
-    A-c
-    A-b
-    b-d
-    A-end
-    b-end
+      start-A
+      start-b
+      A-c
+      A-b
+      b-d
+      A-end
+      b-end
     `;
 
     const path = new Path(parse(input), { loose: true });
@@ -172,56 +172,56 @@ describe('--- Day 12: Passage Pathing --- (part two)', () => {
     expect(result.length).to.eql(36);
 
     expect(result).to.have.members(lines(`
-    start,A,b,A,b,A,c,A,end
-    start,A,b,A,b,A,end
-    start,A,b,A,b,end
-    start,A,b,A,c,A,b,A,end
-    start,A,b,A,c,A,b,end
-    start,A,b,A,c,A,c,A,end
-    start,A,b,A,c,A,end
-    start,A,b,A,end
-    start,A,b,d,b,A,c,A,end
-    start,A,b,d,b,A,end
-    start,A,b,d,b,end
-    start,A,b,end
-    start,A,c,A,b,A,b,A,end
-    start,A,c,A,b,A,b,end
-    start,A,c,A,b,A,c,A,end
-    start,A,c,A,b,A,end
-    start,A,c,A,b,d,b,A,end
-    start,A,c,A,b,d,b,end
-    start,A,c,A,b,end
-    start,A,c,A,c,A,b,A,end
-    start,A,c,A,c,A,b,end
-    start,A,c,A,c,A,end
-    start,A,c,A,end
-    start,A,end
-    start,b,A,b,A,c,A,end
-    start,b,A,b,A,end
-    start,b,A,b,end
-    start,b,A,c,A,b,A,end
-    start,b,A,c,A,b,end
-    start,b,A,c,A,c,A,end
-    start,b,A,c,A,end
-    start,b,A,end
-    start,b,d,b,A,c,A,end
-    start,b,d,b,A,end
-    start,b,d,b,end
-    start,b,end`));
+      start,A,b,A,b,A,c,A,end
+      start,A,b,A,b,A,end
+      start,A,b,A,b,end
+      start,A,b,A,c,A,b,A,end
+      start,A,b,A,c,A,b,end
+      start,A,b,A,c,A,c,A,end
+      start,A,b,A,c,A,end
+      start,A,b,A,end
+      start,A,b,d,b,A,c,A,end
+      start,A,b,d,b,A,end
+      start,A,b,d,b,end
+      start,A,b,end
+      start,A,c,A,b,A,b,A,end
+      start,A,c,A,b,A,b,end
+      start,A,c,A,b,A,c,A,end
+      start,A,c,A,b,A,end
+      start,A,c,A,b,d,b,A,end
+      start,A,c,A,b,d,b,end
+      start,A,c,A,b,end
+      start,A,c,A,c,A,b,A,end
+      start,A,c,A,c,A,b,end
+      start,A,c,A,c,A,end
+      start,A,c,A,end
+      start,A,end
+      start,b,A,b,A,c,A,end
+      start,b,A,b,A,end
+      start,b,A,b,end
+      start,b,A,c,A,b,A,end
+      start,b,A,c,A,b,end
+      start,b,A,c,A,c,A,end
+      start,b,A,c,A,end
+      start,b,A,end
+      start,b,d,b,A,c,A,end
+      start,b,d,b,A,end
+      start,b,d,b,end
+      start,b,end`));
   });
 
   it('The larger given example', () => {
     const input = `
-    dc-end
-    HN-start
-    start-kj
-    dc-start
-    dc-HN
-    LN-dc
-    HN-end
-    kj-sa
-    kj-HN
-    kj-dc
+      dc-end
+      HN-start
+      start-kj
+      dc-start
+      dc-HN
+      LN-dc
+      HN-end
+      kj-sa
+      kj-HN
+      kj-dc
     `;
 
     const path = new Path(parse(input), { loose: true });
@@ -231,24 +231,24 @@ describe('--- Day 12: Passage Pathing --- (part two)', () => {
 
   it('The even larger given example', () => {
     const input = `
-    fs-end
-    he-DX
-    fs-he
-    start-DX
-    pj-DX
-    end-zg
-    zg-sl
-    zg-pj
-    pj-he
-    RW-he
-    fs-DX
-    pj-RW
-    zg-RW
-    start-pj
-    he-WI
-    zg-he
-    pj-fs
-    start-RW
+      fs-end
+      he-DX
+      fs-he
+      start-DX
+      pj-DX
+      end-zg
+      zg-sl
+      zg-pj
+      pj-he
+      RW-he
+      fs-DX
+      pj-RW
+      zg-RW
+      start-pj
+      he-WI
+      zg-he
+      pj-fs
+      start-RW
     `;
 
     const path = new Path(parse(input), { loose: true });
