@@ -1,17 +1,20 @@
 import { isLowerCase } from "../text";
+import { DefaultHistory, History } from "./history";
 import { Segments } from "./segments";
 
 export default class Path {
   private readonly segments: Segments;
   private progress: string[] = [];
   private smallCaves: string[] = [];
+  private history: History;
   private log: (m: any) => void = (m) => this._debug ? console.log(m) : () => {};
   private _debug: boolean = false;
 
-  constructor(segments: Segments, progress: string[] = []) {
+  constructor(segments: Segments, history: History | null = null, progress: string[] = []) {
     this.segments = segments;
     this.progress = progress;
     this.smallCaves = progress.filter(isLowerCase);
+    this.history = history || new DefaultHistory();
   }
 
   debug() {
@@ -51,7 +54,7 @@ export default class Path {
 
     return nextAvailableCaves
       .map((cave) => {
-        const path = new Path(this.segments, [...this.progress]); // [!] Copying progress very important!
+        const path = new Path(this.segments, this.history, [...this.progress]); // [!] Copying progress very important!
         
         if (this._debug) {
           path.debug();
