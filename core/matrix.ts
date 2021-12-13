@@ -18,8 +18,8 @@ export type Options<T> = {
 }
 
 export default class Matrix<T> {
-  private readonly size: Size;
-  private readonly entries: T[][];
+  public readonly size: Size;
+  private entries: T[][];
 
   constructor(size: Size, opts: Options<T> = {}) {
     this.size = size;
@@ -108,6 +108,19 @@ export default class Matrix<T> {
       }
     }
 
+    return result;
+  }
+
+  splitAfterRow(rowIndex: number) : [Matrix<T>, Matrix<T>] {
+    return [
+      this.createFrom<T>(this.entries.slice(0, rowIndex + 1)),
+      this.createFrom<T>(this.entries.slice(rowIndex + 1))
+    ]
+  }
+
+  private createFrom<T>(entries: T[][]) : Matrix<T> {
+    const result = new Matrix<T>({ rows: entries.length, columns: entries[0].length });
+    result.entries = entries;
     return result;
   }
 }

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "env TS_NODE_PROJECT=./tsconfig.json env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r node_modules/ts-node/register -r node_modules/tsconfig-paths/register \"tests/**/*examples.{j,t}s\" \"tests/integration/**/can-*.{j,t}s\" --timeout 10000"
+    "test": "env TS_NODE_PROJECT=./tsconfig.json env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r node_modules/ts-node/register -r node_modules/tsconfig-paths/register \"tests/**/*examples.{j,t}s\" --timeout 10000"
   },
   "author": "",
   "license": "ISC",
