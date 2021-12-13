@@ -2,12 +2,15 @@ import { isLowerCase } from "core/text";
 
 export class DefaultHistory implements History {
   private history: Map<string,number>;
+  private progress: string[] = [];
 
-  constructor(history: Map<string,number> | null = null) {
+  constructor(history: Map<string,number> | null = null, progress: string[] | null = null) {
     this.history = history || new Map();
+    this.progress = progress || [];
   }
 
   record(cave: string) {
+    this.progress.push(cave);
     this.history.set(cave, (this.history.get(cave) || 0) + 1);
   }
 
@@ -18,7 +21,11 @@ export class DefaultHistory implements History {
   }
 
   clone() {
-    return new DefaultHistory(new Map(this.history));
+    return new DefaultHistory(new Map(this.history), [...this.progress]);
+  }
+
+  list() {
+    return [...this.progress];
   }
 
   private get caves() {
@@ -28,12 +35,15 @@ export class DefaultHistory implements History {
 
 export class LooseHistory implements History {
   private history: Map<string,number>;
+  private progress: string[] = [];
 
-  constructor(history: Map<string,number> | null = null) {
+  constructor(history: Map<string,number> | null = null, progress: string[] | null = null) {
     this.history = history || new Map();
+    this.progress = progress || [];
   }
 
   record(cave: string) {
+    this.progress.push(cave);
     this.history.set(cave, (this.history.get(cave) || 0) + 1);
   }
 
@@ -59,7 +69,11 @@ export class LooseHistory implements History {
   }
 
   clone() {
-    return new LooseHistory(new Map(this.history));
+    return new LooseHistory(new Map(this.history), [...this.progress]);
+  }
+
+  list() {
+    return [...this.progress];
   }
 
   private get caves() {
@@ -71,4 +85,5 @@ export interface History {
   record: (cave: string) => void;
   allow: (cave: string) => boolean;
   clone: () => History;
+  list: () => string[];
 }

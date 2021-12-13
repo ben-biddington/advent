@@ -3,13 +3,11 @@ import { Segments } from "./segments";
 
 export default class Path {
   private readonly segments: Segments;
-  private progress: string[] = [];
   private history: History;
   private _debug: boolean = false;
 
-  constructor(segments: Segments, history: History | null = null, progress: string[] = []) {
+  constructor(segments: Segments, history: History | null = null) {
     this.segments = segments;
-    this.progress = progress;
     this.history = history || new DefaultHistory();
   }
 
@@ -22,7 +20,6 @@ export default class Path {
   }
 
   follow(start: string) : string[] {
-    this.progress.push(start);
     this.history.record(start);
 
     if (start === 'end') {
@@ -42,7 +39,7 @@ export default class Path {
         const path = new Path(
           this.segments, 
           this.history.clone(), // [!] Copying progress very important!
-          [...this.progress]);  // [!] Copying progress very important!
+        ); 
         
         if (this._debug) {
           path.debug();
@@ -53,6 +50,6 @@ export default class Path {
   }
 
   private progressReport() {
-    return this.progress.join(',');
+    return this.history.list().join(',');
   }
 }
