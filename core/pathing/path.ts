@@ -27,7 +27,7 @@ export default class Path {
     const availableCaves = this.segments
       .connectedTo(cave)
       .filter(it => it != 'start')
-      .filter(this.history.allow);
+      .filter(this.history.isAllowed);
     
     return availableCaves.map((cave) => this.clone().follow(cave)).flat();
   }

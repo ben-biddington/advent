@@ -21,7 +21,7 @@ export class BasicHistory implements History {
     this.history.set(cave, (this.history.get(cave) || 0) + 1);
   }
 
-  allow = (cave: string) => {
+  isAllowed = (cave: string) => {
     return this.mode === Mode.Loose ? this.loose(cave): this.default(cave);
   }
 
@@ -59,7 +59,7 @@ export class BasicHistory implements History {
 
 export interface History {
   record: (cave: string) => void;
-  allow: (cave: string) => boolean;
+  isAllowed: (cave: string) => boolean;
   clone: () => History;
   list: () => string[];
 }
