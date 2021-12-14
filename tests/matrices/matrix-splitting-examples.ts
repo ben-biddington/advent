@@ -25,7 +25,7 @@ const parse = (input: string, size: Size) : Matrix<number> => {
 
 // npm test -- --grep "Matrix splitting"
 describe('Matrix splitting', () => {
-  it('Examples', () => {
+  it('can split rows', () => {
     const input = `
        1   2   3   4   5
        6   7   8   9  10
@@ -49,6 +49,45 @@ describe('Matrix splitting', () => {
 
     expect(b.at(0,0)).to.eql(11);
     expect(b.at(2,4)).to.eql(25);
+  });
+
+  it('can split columns', () => {
+    const input = `
+       1   2     3   4   5
+       6   7     8   9  10
+      11  12    13  14  15
+      16  17    18  19  20
+      21  22    23  24  25
+    `
+
+    const matrix = parse(input, { rows: 5, columns: 5 });
+
+    const [a, b] = matrix.splitAfterColumn(1);
+
+    expect(a.size).to.eql({ rows: 5, columns: 2 });
+    expect(b.size).to.eql({ rows: 5, columns: 3 });
+
+    expect(a.map((entry) => entry.value)).to.eql([
+      1,2,
+      6,7,
+      11,12,
+      16,17,
+      21,22
+    ]);
+
+    expect(b.map((entry) => entry.value)).to.eql([
+      3,4,5,
+      8,9,10,
+      13,14,15,
+      18,19,20,
+      23,24,25
+    ]);
+
+    expect(a.at(0,0)).to.eql(1);
+    expect(a.at(4,1)).to.eql(22);
+
+    expect(b.at(0,0)).to.eql(3);
+    expect(b.at(4,2)).to.eql(25);
   });
 });
 

@@ -118,6 +118,32 @@ export default class Matrix<T> {
     ]
   }
 
+  splitAfterColumn(columnIndex: number) : [Matrix<T>, Matrix<T>] {
+    const leftSize  = {...this.size, columns: columnIndex + 1};
+    const rightSize = {...this.size, columns: this.size.columns - leftSize.columns};
+
+    const entriesLeft: T[][] = this.newBlank(leftSize);
+
+    for (let row = 0; row < leftSize.rows; row++) {
+      for (let column = 0; column <= columnIndex; column++) {
+        entriesLeft[row][column] = this.at(row, column);
+      }
+    }
+
+    const entriesRight: T[][] = this.newBlank(rightSize);
+
+    for (let row = 0; row < rightSize.rows; row++) {
+      for (let column = columnIndex; column < rightSize.columns + 1; column++) {
+        entriesRight[row][column - leftSize.columns + 1] = this.at(row, column + columnIndex);
+      }
+    }
+    
+    return [
+      this.createFrom<T>(entriesLeft),
+      this.createFrom<T>(entriesRight)
+    ]
+  }
+
   flip(axis: 'x'|'y'): Matrix<T> {
     if (axis === 'x') {
       return this.createFrom<T>([...this.entries].reverse());
@@ -143,6 +169,21 @@ export default class Matrix<T> {
   private createFrom<T>(entries: T[][]) : Matrix<T> {
     const result = new Matrix<T>({ rows: entries.length, columns: entries[0].length });
     result.entries = entries;
+    return result;
+  }
+
+  private newBlank(size: Size, defaultValue = undefined) {
+    const result: T[][] = [];
+
+    for (let rowIndex = 0; rowIndex < size.rows; rowIndex++) {
+      const newRow: T[] = []; result.push(newRow);
+
+      for (let columnIndex = 0; columnIndex < size.columns; columnIndex++) {
+        //@ts-ignore
+        newRow.push(defaultValue);
+      }
+    }
+
     return result;
   }
 }

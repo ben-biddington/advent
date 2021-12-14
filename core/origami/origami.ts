@@ -39,6 +39,14 @@ export class Origami {
     });
   }
 
+  fold(fold: Fold) : Matrix<string> {
+    const [a,b] = this.matrix.splitAfterRow(fold.value - 1);
+
+    return a.merge(b.flip('x'), (a,b) => {
+      return a == '#' || b == '#' ? '#' : '.';
+    });
+  }
+
   get count() {
     return this.input.length;
   }

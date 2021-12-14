@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { Origami, Instructions, Fold } from "core/origami/origami";
 import { lines } from "core/text";
 import * as fs from 'fs';
+import { isExportDeclaration } from "typescript";
 
 const indexOf = (lines: string[], match: (line: string) => boolean) => {
   let index = -1;
@@ -126,7 +127,17 @@ describe('--- Day 13: Transparent Origami --- (part one)', () => {
 
     const [origami, instructions] = parse(input);
 
-    //const [a,b] = origami.fold()
+    const folded = origami.fold(instructions.folds[0]);
 
+    const expected=`
+#.##..#..#.
+#...#......
+......#...#
+#...#......
+.#.#..#.###
+...........
+...........`;
+
+  expect(folded.report(e => e)).to.eql(expected.trim());
   });
 });
