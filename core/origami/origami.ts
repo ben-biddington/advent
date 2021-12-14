@@ -46,16 +46,14 @@ export class Origami {
 
   fold(fold: Fold) : Origami {
     if (fold.axis == 'y') {
-      const temp  = this.matrix.withoutRow(fold.value);
-      const [a,b] = temp.splitAfterRow(fold.value - 1);
+      const [a,b] = this.matrix.withoutRow(fold.value).splitAfterRow(fold.value - 1);
 
       return new Origami(
         a.merge(b.flip('x'), (a,b) => {
           return a == '#' || b == '#' ? '#' : '.';
       }));
     } else {
-      const temp  = this.matrix.withoutColumn(fold.value);
-      const [a,b] = temp.splitAfterColumn(fold.value - 1);
+      const [a,b] = this.matrix.withoutColumn(fold.value).splitAfterColumn(fold.value - 1);
 
       return new Origami(
         a.merge(b.flip('y'), (a,b) => {
