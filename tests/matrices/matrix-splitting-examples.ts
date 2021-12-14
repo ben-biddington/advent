@@ -62,6 +62,47 @@ describe('Removing entries', () => {
       21,22,23,24,25
     ]);
   });
+
+  it('can remove columns', () => {
+    const input = `
+       1   2  |  3   4   5
+       6   7  |  8   9  10
+      11  12  | 13  14  15
+      16  17  | 18  19  20
+      21  22  | 23  24  25
+    `
+
+    const matrix = new Matrix<string>({ rows: 5, columns: 6 });
+
+    lines(input).forEach((line, row) => {
+      line
+        .split(' ')
+        .map(it => it.trim())
+        .filter(it => it.length > 0)
+        .forEach((entry, column) => {
+          matrix.add({
+            postion: { column, row },
+            value: entry
+          });
+        });
+    });
+
+    const next = matrix.withoutColumn(2);
+
+    expect(next.size).to.eql({ rows: 5, columns: 5 });
+    expect(matrix.size).to.eql({ rows: 5, columns: 6 });
+
+    expect(next.map((entry) => parseInt(entry.value))).to.eql([
+      1 ,2 ,3 ,4 ,5,
+      6 ,7 ,8 ,9 ,10,
+      11,12,13,14,15,
+      16,17,18,19,20,
+      21,22,23,24,25
+    ]);
+
+    expect(next.at(4,4)).to.eql('25');
+    expect(matrix.at(4,4)).to.eql('24');
+  });
 })
 
 // npm test -- --grep "Matrix splitting"

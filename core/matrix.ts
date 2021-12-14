@@ -170,6 +170,12 @@ export default class Matrix<T> {
     return this.createFrom([...this.entries].filter((_, i) => i != index));
   }
 
+  withoutColumn(index: number) {
+    return this.createFrom([...this.entries].map(row => {
+      return [...row].filter((_, i) => i != index)
+    }));
+  }
+
   private createFrom<T>(entries: T[][]) : Matrix<T> {
     const result = new Matrix<T>({ rows: entries.length, columns: entries[0].length });
     result.entries = entries;
