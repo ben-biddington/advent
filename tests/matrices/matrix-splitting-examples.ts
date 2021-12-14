@@ -23,6 +23,47 @@ const parse = (input: string, size: Size) : Matrix<number> => {
   return matrix;
 }
 
+describe('Removing entries', () => {
+  it('can remove rows', () => {
+    const input = `
+       1   2   3   4   5
+       6   7   8   9  10
+      --  --  --  --  -- 
+      11  12  13  14  15
+      16  17  18  19  20
+      21  22  23  24  25
+    `
+
+    const matrix = new Matrix<string>({ rows: 6, columns: 5 });
+
+    lines(input).forEach((line, row) => {
+      line
+        .split(' ')
+        .map(it => it.trim())
+        .filter(it => it.length > 0)
+        .forEach((entry, column) => {
+          matrix.add({
+            postion: { column, row },
+            value: entry
+          });
+        });
+    });
+
+    const next = matrix.withoutRow(2);
+
+    expect(next.size).to.eql({ rows: 5, columns: 5 });
+    expect(matrix.size).to.eql({ rows: 6, columns: 5 });
+
+    expect(next.map((entry) => parseInt(entry.value))).to.eql([
+      1 ,2 ,3 ,4 ,5,
+      6 ,7 ,8 ,9 ,10,
+      11,12,13,14,15,
+      16,17,18,19,20,
+      21,22,23,24,25
+    ]);
+  });
+})
+
 // npm test -- --grep "Matrix splitting"
 describe('Matrix splitting', () => {
   it('can split rows', () => {

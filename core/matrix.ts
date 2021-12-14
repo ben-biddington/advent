@@ -96,8 +96,8 @@ export default class Matrix<T> {
     }
   }
 
-  map(fn: (entry: Entry<T>) => T) : T[] {
-    const result: T[] = [];
+  map<TRESULT>(fn: (entry: Entry<T>) => TRESULT) : TRESULT[] {
+    const result: TRESULT[] = [];
 
     for (let row = 0; row < this.size.rows; row++) {
       for (let column = 0; column < this.size.columns; column++) {
@@ -164,6 +164,10 @@ export default class Matrix<T> {
     }
 
     return this.createFrom(rows);
+  }
+
+  withoutRow(index: number) {
+    return this.createFrom([...this.entries].filter((_, i) => i != index));
   }
 
   private createFrom<T>(entries: T[][]) : Matrix<T> {
