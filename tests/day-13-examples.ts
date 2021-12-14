@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Origami, Instructions, Fold } from "core/origami/origami";
+import { parse as parseOrigami, Origami, Instructions, Fold } from "core/origami/origami";
 import { lines } from "core/text";
 import * as fs from 'fs';
 import { isExportDeclaration } from "typescript";
@@ -31,7 +31,7 @@ const parse = (input: string): [Origami, Instructions] => {
     return { axis: match?.groups['axis'] , value: parseInt(match?.groups['value']) };
   }
 
-  const origami = new Origami(l.slice(0, indexOfBlankLine));
+  const origami = parseOrigami(l.slice(0, indexOfBlankLine));
   const folds   = l.slice(indexOfBlankLine + 1).map(parseFold); 
 
   origami.apply(folds.slice(0, 1));
@@ -138,6 +138,6 @@ describe('--- Day 13: Transparent Origami --- (part one)', () => {
 ...........
 ...........`;
 
-  expect(folded.report(e => e)).to.eql(expected.trim());
+    expect(folded.toString()).to.eql(expected.trim());
   });
 });

@@ -1,27 +1,32 @@
 import Matrix, { Size } from "core/matrix";
 
+export const parse = (input: string[]): Origami => {
+  const points = input
+    .map(it => it.split(','))
+    .map(it => [ parseInt(it[0]), parseInt(it[1]) ]);
+
+  const largestX = points.map(it => it[0]).sort((a,b) => b - a)[0];
+  const largestY = points.map(it => it[1]).sort((a,b) => b - a)[0];
+
+  const size = { columns: largestX + 1, rows: largestY + 1 };
+
+  const matrix = new Matrix(size, { defaultValue: '.' });
+
+  points.forEach(([x,y]) => {
+    matrix.set(y, x, "#");
+  });
+
+  return new Origami(matrix);
+}
+
 export class Origami {
   private input: string[] = [];
   private matrix: Matrix<string>;
   private size: Size;
 
-  constructor(input: string[]) {
-    this.input = input;
-
-    const points = input
-      .map(it => it.split(','))
-      .map(it => [ parseInt(it[0]), parseInt(it[1]) ]);
-    
-    const largestX = points.map(it => it[0]).sort((a,b) => b - a)[0];
-    const largestY = points.map(it => it[1]).sort((a,b) => b - a)[0];
-
-    this.size = { columns: largestX + 1, rows: largestY + 1 };
-
-    this.matrix = new Matrix(this.size, { defaultValue: '.' });
-
-    points.forEach(([x,y]) => {
-      this.matrix.set(y, x, "#");
-    });
+  constructor(matrix: Matrix<string>) {
+    this.size = matrix.size;
+    this.matrix = matrix;
   }
 
   apply(folds: Fold[]) {
@@ -39,16 +44,19 @@ export class Origami {
     });
   }
 
-  fold(fold: Fold) : Matrix<string> {
+  fold(fold: Fold) : Origami {
     const [a,b] = this.matrix.splitAfterRow(fold.value - 1);
 
-    return a.merge(b.flip('x'), (a,b) => {
-      return a == '#' || b == '#' ? '#' : '.';
-    });
+    return new Origami(
+      a.merge(b.flip('x'), (a,b) => {
+        return a == '#' || b == '#' ? '#' : '.';
+    }));
   }
 
   get count() {
-    return this.input.length;
+    return this.matrix
+      .map(it => it.value)
+      .filter(it => it === '#').length;
   }
 
   toString() {
