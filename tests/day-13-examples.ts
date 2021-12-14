@@ -164,4 +164,25 @@ describe('--- Day 13: Transparent Origami --- (part one)', () => {
 
     expect(folded.count).to.eql(678);
   });
+
+  it('The real example (2)', () => {
+    const input = fs.readFileSync('./input/thirteen').toString();
+
+    const [origami, instructions] = parse(input);
+
+    let folded = origami;
+
+    for (let index = 0; index < instructions.folds.length; index++) {
+      folded = folded.fold(instructions.folds[index]);
+    }
+
+    expect(folded.toString()).to.eql(`
+####..##..####.#..#.#....#..#.####.####.
+#....#..#.#....#..#.#....#..#....#.#....
+###..#....###..####.#....####...#..###..
+#....#....#....#..#.#....#..#..#...#....
+#....#..#.#....#..#.#....#..#.#....#....
+####..##..#....#..#.####.#..#.####.#....
+`.trim());
+  });
 });
