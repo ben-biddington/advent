@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { parse as parseOrigami, Origami, Instructions, Fold } from "core/origami/origami";
 import { lines } from "core/text";
 import * as fs from 'fs';
-import { isExportDeclaration } from "typescript";
 
 const indexOf = (lines: string[], match: (line: string) => boolean) => {
   let index = -1;
