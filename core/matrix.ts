@@ -128,6 +128,18 @@ export default class Matrix<T> {
     throw new Error(`Flipping arond <${axis}> axis not yet supported`);
   }
 
+  merge(other: Matrix<T>, operator: ((a: T, b: T) => T)) {
+    const rows = [...this.entries];
+
+    for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+      for (let columnIndex = 0; columnIndex < this.size.columns; columnIndex++) {
+        rows[rowIndex][columnIndex] = operator(this.at(rowIndex, columnIndex), other.at(rowIndex, columnIndex));
+      }
+    }
+
+    return this.createFrom(rows);
+  }
+
   private createFrom<T>(entries: T[][]) : Matrix<T> {
     const result = new Matrix<T>({ rows: entries.length, columns: entries[0].length });
     result.entries = entries;
