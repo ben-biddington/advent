@@ -45,7 +45,8 @@ export class Origami {
   }
 
   fold(fold: Fold) : Origami {
-    const [a,b] = this.matrix.splitAfterRow(fold.value - 1);
+    const temp = this.matrix.withoutRow(fold.value);
+    const [a,b] = temp.splitAfterRow(fold.value - 1);
 
     return new Origami(
       a.merge(b.flip('x'), (a,b) => {
