@@ -129,6 +129,8 @@ describe('--- Day 13: Transparent Origami --- (part one)', () => {
 
     const folded = origami.fold(instructions.folds[0]);
 
+    expect(folded.count).to.eql(17);
+
     const expected=`
 #.##..#..#.
 #...#......
@@ -139,5 +141,27 @@ describe('--- Day 13: Transparent Origami --- (part one)', () => {
 ...........`;
 
     expect(folded.toString()).to.eql(expected.trim());
+
+    const secondFold = folded.fold(instructions.folds[1]);
+
+    expect(secondFold.toString()).to.eql(`
+#####
+#...#
+#...#
+#...#
+#####
+.....
+.....
+    `.trim());
+  });
+
+  it('The real example', () => {
+    const input = fs.readFileSync('./input/thirteen').toString();
+
+    const [origami, instructions] = parse(input);
+
+    const folded = origami.fold(instructions.folds[0]);
+
+    expect(folded.count).to.eql(678);
   });
 });

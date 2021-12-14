@@ -45,13 +45,23 @@ export class Origami {
   }
 
   fold(fold: Fold) : Origami {
-    const temp = this.matrix.withoutRow(fold.value);
-    const [a,b] = temp.splitAfterRow(fold.value - 1);
+    if (fold.axis == 'y') {
+      const temp  = this.matrix.withoutRow(fold.value);
+      const [a,b] = temp.splitAfterRow(fold.value - 1);
 
-    return new Origami(
-      a.merge(b.flip('x'), (a,b) => {
-        return a == '#' || b == '#' ? '#' : '.';
-    }));
+      return new Origami(
+        a.merge(b.flip('x'), (a,b) => {
+          return a == '#' || b == '#' ? '#' : '.';
+      }));
+    } else {
+      const temp  = this.matrix.withoutColumn(fold.value);
+      const [a,b] = temp.splitAfterColumn(fold.value - 1);
+
+      return new Origami(
+        a.merge(b.flip('y'), (a,b) => {
+          return a == '#' || b == '#' ? '#' : '.';
+      }));
+    }
   }
 
   get count() {

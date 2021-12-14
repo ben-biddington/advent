@@ -133,8 +133,10 @@ export default class Matrix<T> {
     const entriesRight: T[][] = this.newBlank(rightSize);
 
     for (let row = 0; row < rightSize.rows; row++) {
-      for (let column = columnIndex; column < rightSize.columns + 1; column++) {
-        entriesRight[row][column - leftSize.columns + 1] = this.at(row, column + columnIndex);
+      for (let column = 0; column < rightSize.columns; column++) {
+        const offsetColumnIndex = column + columnIndex + 1;
+        
+        entriesRight[row][column] = this.at(row, offsetColumnIndex);
       }
     }
     
