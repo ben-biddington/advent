@@ -23,8 +23,8 @@ class Rules {
     return this.rules.some(it => it.pair === value);
   }
 
-  get(value: string) {
-    return this.rules.filter(it => it.pair === value)[0];
+  get(value: string): string {
+    return this.rules.filter(it => it.pair === value)[0].insertion;
   }
 
   at(index: number) {
@@ -49,6 +49,24 @@ const parse = (input: string) : [Template, Rules] => {
   });
 
   return [template, new Rules(rules)];
+}
+
+const step = (templateText: string, rules: Rules) => {
+  const result = [];
+
+  const template = templateText.split('');
+
+  for (let index = 0; index < template.length - 1; index++) {
+    const substring = template.slice(index, index + 2).join('');
+    
+    if (rules.has(substring)) {
+      result.push(substring.slice(0, 1) + rules.get(substring));
+    }
+  }
+
+  result.push(template.at(-1) || '');
+
+  return result.join(''); 
 }
 
 describe.only('--- Day 14: Extended Polymerization --- (part one)', () => {
@@ -108,18 +126,14 @@ describe.only('--- Day 14: Extended Polymerization --- (part one)', () => {
 
     const [template, rules] = parse(input);
 
-    const initialValue = template.value.split('');
+    const one   = step(template.value, rules);
+    const two   = step(one, rules);
+    const three = step(two, rules);
+    const four  = step(three, rules);
 
-    const result: string[] = [];
-
-    for (let index = 0; index < initialValue.length - 1; index++) {
-      const substring = initialValue.slice(index, 2).join('');
-
-      if (rules.has(substring)) {
-        result.push(substring.slice(0, 1) + rules.get(substring));
-      }
-    }
-
-    console.log({ result });
+    expect(one  ).to.eql('NCNBCHB');
+    expect(two  ).to.eql('NBCCNBBBCBHCB');
+    expect(three).to.eql('NBBBCNCCNBBNBNBBCHBHHBCHB');
+    expect(four ).to.eql('NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB');
   });
 });
