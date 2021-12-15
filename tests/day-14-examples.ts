@@ -140,7 +140,7 @@ class Polymer {
   }
 }
 
-describe.only('--- Day 14: Extended Polymerization --- (part one)', () => {
+describe('--- Day 14: Extended Polymerization --- (part one)', () => {
   it('parsing', () => {
     const input=`
     NNCB
@@ -209,5 +209,24 @@ describe.only('--- Day 14: Extended Polymerization --- (part one)', () => {
 
     expect(polymer.mostCommon()).to.eql({ letter: 'B', count: 1749 });
     expect(polymer.leastCommon()).to.eql({ letter: 'H', count: 161 });
+
+    const result = polymer.mostCommon().count - polymer.leastCommon().count;
+    
+    expect(result).to.eql(1588);
+  });
+
+  it('the actual example', () => {
+
+    const input = fs.readFileSync('./input/fourteen').toString();
+
+    const [template, rules] = parse(input);
+
+    const polymer = new Polymer(template.value, rules);
+
+    polymer.run(10);
+
+    const result = polymer.mostCommon().count - polymer.leastCommon().count;
+    
+    expect(result).to.eql(2068);
   });
 });
