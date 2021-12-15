@@ -12,6 +12,11 @@ type Rule = {
   insertion: string;
 }
 
+type LetterCount = {
+  letter: string;
+  count: number;
+}
+
 class Rules {
   private rules: Rule[] = [];
   
@@ -51,22 +56,88 @@ const parse = (input: string) : [Template, Rules] => {
   return [template, new Rules(rules)];
 }
 
-const step = (templateText: string, rules: Rules) => {
-  const result = [];
+class Polymer {
+  private templateText: string;
+  private originalTemplateText: string;
+  private rules: Rules;
 
-  const template = templateText.split('');
+  constructor(templateText: string, rules: Rules) {
+    this.templateText = templateText;
+    this.originalTemplateText = templateText;
+    this.rules = rules;
+  }
+  
+  run(count: number): string {
+    let result = this.templateText;
 
-  for (let index = 0; index < template.length - 1; index++) {
-    const substring = template.slice(index, index + 2).join('');
-    
-    if (rules.has(substring)) {
-      result.push(substring.slice(0, 1) + rules.get(substring));
+    for (let index = 0; index < count; index++) {
+      result = this.step(result);
     }
+
+    return this.templateText = result;
   }
 
-  result.push(template.at(-1) || '');
+  get length() {
+    return this.templateText.length;
+  }
 
-  return result.join(''); 
+  reset() {
+    this.templateText = this.originalTemplateText;
+  }
+
+  mostCommon() : LetterCount {
+    const counts = new Map<string,number>();
+
+    for (let index = 0; index < this.templateText.length; index++) {
+      const letter = this.templateText.slice(index, index + 1);
+      counts.set(letter, (counts.get(letter) || 0) + 1);
+    }
+
+    const sorted = Array.from(counts.entries()).sort((a,b) => {
+      const [_, countA] = a;
+      const [__, countB] = b;
+
+      return countB - countA;
+    });
+
+    return { letter: sorted[0][0], count: sorted[0][1] };
+  }
+
+  leastCommon() : LetterCount {
+    const counts = new Map<string,number>();
+
+    for (let index = 0; index < this.templateText.length; index++) {
+      const letter = this.templateText.slice(index, index + 1);
+      counts.set(letter, (counts.get(letter) || 0) + 1);
+    }
+
+    const sorted = Array.from(counts.entries()).sort((a,b) => {
+      const [_, countA]   = a;
+      const [__, countB]  = b;
+
+      return countB - countA;
+    });
+
+    return { letter: sorted[sorted.length -1][0], count: sorted[sorted.length -1][1] };
+  }
+
+  private step(templateText: string) {
+    const result = [];
+  
+    const template = templateText.split('');
+  
+    for (let index = 0; index < template.length - 1; index++) {
+      const substring = template.slice(index, index + 2).join('');
+      
+      if (this.rules.has(substring)) {
+        result.push(substring.slice(0, 1) + this.rules.get(substring));
+      }
+    }
+  
+    result.push(template.at(-1) || '');
+  
+    return result.join(''); 
+  }
 }
 
 describe.only('--- Day 14: Extended Polymerization --- (part one)', () => {
@@ -126,14 +197,17 @@ describe.only('--- Day 14: Extended Polymerization --- (part one)', () => {
 
     const [template, rules] = parse(input);
 
-    const one   = step(template.value, rules);
-    const two   = step(one, rules);
-    const three = step(two, rules);
-    const four  = step(three, rules);
+    const polymer = new Polymer(template.value, rules);
 
-    expect(one  ).to.eql('NCNBCHB');
-    expect(two  ).to.eql('NBCCNBBBCBHCB');
-    expect(three).to.eql('NBBBCNCCNBBNBNBBCHBHHBCHB');
-    expect(four ).to.eql('NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB');
+    expect(polymer.run(4)).to.eql('NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB');
+
+    polymer.reset();
+
+    polymer.run(10);
+
+    expect(polymer.length).to.eql(3073);
+
+    expect(polymer.mostCommon()).to.eql({ letter: 'B', count: 1749 });
+    expect(polymer.leastCommon()).to.eql({ letter: 'H', count: 161 });
   });
 });
