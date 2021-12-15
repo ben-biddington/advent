@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { parse as parseOrigami, Origami, Instructions, Fold } from "core/origami/origami";
+import { sum } from "core/array-extensions";
 import { lines } from "core/text";
 import * as fs from 'fs';
 
@@ -57,62 +57,40 @@ const parse = (input: string) : [Template, Rules] => {
 }
 
 class Polymer {
-  private originalTemplate: string[];
+  private originalTemplate: string;
   private rules: Rules;
-  private counts = new Map<string,number>();
   private pairCounts = new Map<string,number>();
-  private value: string[];
+  private characterCounts = new Map<string,number>();
 
   constructor(templateText: string, rules: Rules) {
-    this.value = templateText.split('');
-    this.originalTemplate = [...this.value];
+    this.originalTemplate = templateText;
     this.rules = rules;
-    this.increment(this.value);
-  }
-  
-  run(count: number): void {
-    let result = this.value;
-
-    for (let index = 0; index < count; index++) {
-      result = this.step(result);
-      console.log({index, length: result.length});
-    }
-
-    this.value = result
-  }
-
-  get length() {
-    return this.value.length;
-  }
-
-  toString() {
-    return this.value.join('');
+    this.incrementPairs(templateText);
   }
 
   reset() {
-    this.counts.clear();
-    this.increment(this.originalTemplate);
-    this.value = [...this.originalTemplate]
+    this.pairCounts.clear();
+    this.incrementPairs(this.originalTemplate);
+  }
+  
+  run(count: number): void {
+    for (let index = 0; index < count; index++) {
+      this.step();
+    }
+  }
+
+  get length() {
+    return sum(Array.from(this.pairCounts.values()))
   }
 
   mostCommon() : LetterCount {
-    const sorted = Array.from(this.counts.entries()).sort((a,b) => {
-      const [_, countA] = a;
-      const [__, countB] = b;
-
-      return countB - countA;
-    });
+    const sorted = this.sortCharacterCounts();
 
     return { letter: sorted[0][0], count: sorted[0][1] };
   }
 
   leastCommon() : LetterCount {
-    const sorted = Array.from(this.counts.entries()).sort((a,b) => {
-      const [_, countA]   = a;
-      const [__, countB]  = b;
-
-      return countB - countA;
-    });
+    const sorted = this.sortCharacterCounts();
 
     return { 
       letter: sorted[sorted.length -1][0], 
@@ -120,34 +98,47 @@ class Polymer {
     };
   }
 
-  private step(template: string[]): string[] {
-    const result = [];
-  
-    for (let index = 0; index < template.length - 1; index++) {
-      const substring = template.slice(index, index + 2).join('');
+  private sortCharacterCounts() {
+    return Array.from(this.characterCounts.entries()).sort((a,b) => {
+      const [_, countA]   = a;
+      const [__, countB]  = b;
 
-      if (this.rules.has(substring)) {
-        const nextLetter = this.rules.get(substring);
-
-        this.increment([nextLetter]);
-
-        result.push(substring.slice(0, 1), nextLetter);
-      }
-    }
-  
-    result.push(template.at(-1) || ''); // [i] Final letter already counted
-  
-    return result;
+      return countB - countA;
+    });
   }
 
-  private increment(letters: string[]) {
-    letters.forEach(letter => {
-      this.counts.set(letter, (this.counts.get(letter) || 0) + 1);
+  private step(): void {
+    Array.from(this.pairCounts.keys()).forEach(pair => {
+      if (this.rules.has(pair)) {
+        const newValue = this.rules.get(pair);
+        
+        this.incrementPair(pair.slice(0,1) + newValue);
+      }
     });
+  }
+
+  private incrementPairs(text: string) {
+    for (let index = 0; index < text.length - 1; index++) {
+      this.incrementPair(text.split('').slice(index, index + 2).join(''));
+    }
+
+    text.split('').forEach(this.incrementCharacter);
+  }
+
+  private incrementPair(pair: string) {
+    if (pair) {
+      this.pairCounts.set(pair, (this.pairCounts.get(pair) || 0) + 1);
+    }
+  }
+
+  private incrementCharacter = (character: string) => {
+    if (character) {
+      this.characterCounts.set(character, (this.characterCounts.get(character) || 0) + 1);
+    }
   }
 }
 
-describe('--- Day 14: Extended Polymerization --- (part one)', () => {
+describe.only('--- Day 14: Extended Polymerization --- (part one)', () => {
   it('parsing', () => {
     const input=`
     NNCB
@@ -206,12 +197,6 @@ describe('--- Day 14: Extended Polymerization --- (part one)', () => {
 
     const polymer = new Polymer(template.value, rules);
     
-    polymer.run(4);
-
-    expect(polymer.toString()).to.eql('NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB');
-
-    polymer.reset();
-
     polymer.run(10);
 
     expect(polymer.length).to.eql(3073);
